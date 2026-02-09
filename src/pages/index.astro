@@ -237,7 +237,7 @@ import Layout from '../layouts/Layout.astro';
         const formData = new FormData(form);
         const data = Object.fromEntries(formData);
         
-        const timingVal = (data.timing === 'Anders' && data.customDate) ? `Datum: \${data.customDate}` : data.timing;
+        const timingVal = (data.timing === 'Anders' && data.customDate) ? `Datum: ${data.customDate}` : data.timing;
 
         // Helper to convert text to sans-serif bold unicode
         const toBoldSans = (text: string) => {
@@ -258,7 +258,7 @@ import Layout from '../layouts/Layout.astro';
         const partnerStr = String(data.partners || '');
         const fotosStr = String(data.fotos || '');
         
-        const inputText = `\${watStr} \${waaromStr} \${toelichtingStr}`.toLowerCase();
+        const inputText = `${watStr} ${waaromStr} ${toelichtingStr}`.toLowerCase();
         let theme = 'general';
         let themeIcon = ''; 
         
@@ -289,55 +289,55 @@ import Layout from '../layouts/Layout.astro';
         }
 
         // 3. Construct Narrative
-        const boldHook = toBoldSans(`\${hook}`);
+        const boldHook = toBoldSans(`${hook}`);
         
         const introSentence = theme === 'general' 
             ? 'Innovatie vraagt om visie en daadkracht.' 
-            : `De taak is helder: we moeten \${themeIcon} versnellen.`;
+            : `De taak is helder: we moeten ${themeIcon} versnellen.`;
 
         const partnerText = partnerStr.length > 2 
-            ? `Samen met \${toBoldSans(partnerStr)} bundelen we onze krachten.`
+            ? `Samen met ${toBoldSans(partnerStr)} bundelen we onze krachten.`
             : 'Samen met onze partners maken we het verschil.';
 
-        const locationText = data.waar ? `in \${data.waar}` : 'in de regio';
+        const locationText = data.waar ? `in ${data.waar}` : 'in de regio';
         
         const impactText = data.waarom 
-            ? `Met deze ontwikkeling geven we direct invulling aan onze ambitie: \${data.waarom}.`
+            ? `Met deze ontwikkeling geven we direct invulling aan onze ambitie: ${data.waarom}.`
             : '[AANVULLEN: Wat is het doel/ambitie van dit project?]';
 
         // 4. Build Final Draft (Compact Version)
         const socialDraft = `
-\${boldHook}
+${boldHook}
 
-\${introSentence} Daarom zetten we \${locationText} een belangrijke nieuwe stap.
-\${partnerText} Dit initiatief bewijst dat we in Zeeland niet alleen dromen, maar ook doen.
-\${impactText} Het biedt concrete kansen om te pionieren en onze positie als kennisregio te versterken.
+${introSentence} Daarom zetten we ${locationText} een belangrijke nieuwe stap.
+${partnerText} Dit initiatief bewijst dat we in Zeeland niet alleen dromen, maar ook doen.
+${impactText} Het biedt concrete kansen om te pionieren en onze positie als kennisregio te versterken.
 
 👉 Wil je ook innoveren in de KAAP? Neem dan contact op met @Marc Menu voor de mogelijkheden.`.trim();
 
-        const subject = `Content Idee: \${watStr}`;
+        const subject = `Content Idee: ${watStr}`;
         const body = `Create Social Post
 ================
-ONDERWERP: \${watStr}
-PLAATSING: \${timingVal}
-LOCATIE: \${data.waar || '-'}
-PARTNERS: \${partnerStr}
-DOEL: \${data.waarom || '-'}
-ACHTERGROND: \${toelichtingStr}
+ONDERWERP: ${watStr}
+PLAATSING: ${timingVal}
+LOCATIE: ${data.waar || '-'}
+PARTNERS: ${partnerStr}
+DOEL: ${data.waarom || '-'}
+ACHTERGROND: ${toelichtingStr}
 
 CONTACT
 -------
-Persoon: \${data.contactPersoon || '-'}
-Info: \${data.contactGegevens || '-'}
+Persoon: ${data.contactPersoon || '-'}
+Info: ${data.contactGegevens || '-'}
 
-VERPLICHTINGEN: \${data.verplichtingen || 'Geen'}
+VERPLICHTINGEN: ${data.verplichtingen || 'Geen'}
 
 FOTO'S / VIDEO'S (Link/Bijlage):
-\${fotosStr}
+${fotosStr}
 
 CONCEPT POST
 ------------
-\${socialDraft}
+${socialDraft}
 `.trim();
 
         return { subject, body };
@@ -346,6 +346,6 @@ CONCEPT POST
     form?.addEventListener('submit', (e) => {
         e.preventDefault();
         const mailData = generateMailData();
-        window.location.href = `mailto:jorik@dockwize.nl,phaedra@dockwize.nl?subject=\${encodeURIComponent(mailData.subject)}&body=\${encodeURIComponent(mailData.body)}`;
+        window.location.href = `mailto:jorik@dockwize.nl,phaedra@dockwize.nl?subject=${encodeURIComponent(mailData.subject)}&body=${encodeURIComponent(mailData.body)}`;
     });
 </script>
