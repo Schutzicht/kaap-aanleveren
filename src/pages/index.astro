@@ -88,17 +88,17 @@ import Layout from '../layouts/Layout.astro';
                     placeholder="@Partner1, @Partner2..." />
             </div>
 
-            <!-- Toelichting voor content -->
+            <!-- Jouw verhaal -->
             <div class="space-y-2">
                 <div class="flex items-center justify-between">
-                    <label for="toelichting" class="block font-heading font-semibold text-kaap-gray text-lg">Toelichting voor content</label>
+                    <label for="toelichting" class="block font-heading font-semibold text-kaap-gray text-lg">Jouw verhaal</label>
                     <button type="button" id="micButton" class="text-kaap-gray hover:text-kaap-pink transition-colors p-2 rounded-full hover:bg-gray-100 hidden group-focus-within:block" title="Spreek toelichting in">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
                         </svg>
                     </button>
                 </div>
-                <p class="text-sm text-kaap-text-gray mb-2">Het verhaal in het kort.</p>
+                <p class="text-sm text-kaap-text-gray mb-2">Vertel kort waar het over gaat.</p>
                 <div class="relative">
                     <textarea id="toelichting" name="toelichting" rows="3"
                         class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400 resize-none"
@@ -112,31 +112,66 @@ import Layout from '../layouts/Layout.astro';
                 </div>
             </div>
 
-            <!-- Foto's/video's -->
+            <!-- Foto's/video's Drag & Drop -->
             <div class="space-y-2">
-                <label for="media" class="block font-heading font-semibold text-kaap-gray text-lg">Foto's / Video's</label>
-                <p class="text-sm text-kaap-text-gray mb-2">Heb je beeld? Plak een linkje of voeg ze toe als bijlage in de mail.</p>
-                <input type="text" id="media" name="media"
-                    class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
-                    placeholder="Link naar bestanden (optioneel)" />
+                <label class="block font-heading font-semibold text-kaap-gray text-lg">Foto's / Video's</label>
+                <p class="text-sm text-kaap-text-gray mb-2">Sleep bestanden hierheen of klik om te selecteren.</p>
+                
+                <div id="dropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 hover:border-kaap-pink transition-all cursor-pointer group">
+                    <input type="file" id="fileInput" name="files" multiple class="hidden" />
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="bg-gray-100 p-3 rounded-full group-hover:bg-kaap-pink/10 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 text-gray-400 group-hover:text-kaap-pink transition-colors">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-500 font-medium group-hover:text-kaap-gray">Selecteer bestanden<br><span class="text-xs text-gray-400 font-normal">(Wordt niet automatisch bijgevoegd, wel in mail-tekst gezet)</span></p>
+                    </div>
+                </div>
+                <!-- File List Preview -->
+                <ul id="fileList" class="space-y-2 mt-3"></ul>
             </div>
 
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Partnerinput/contactpersoon -->
-                <div class="space-y-2">
-                    <label for="contact" class="block font-heading font-semibold text-kaap-gray text-lg">Contactpersoon</label>
-                    <input type="text" id="contact" name="contact"
-                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
-                        placeholder="Naam / Organisatie" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Contact Persoon & Organisatie -->
+                <div class="space-y-4">
+                     <div class="space-y-2">
+                        <label for="contactNaam" class="block font-heading font-semibold text-kaap-gray text-lg">Contactpersoon</label>
+                        <input type="text" id="contactNaam" name="contactNaam"
+                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                            placeholder="Naam" />
+                    </div>
+                     <div class="space-y-2">
+                        <label for="contactOrganisatie" class="block font-heading font-semibold text-kaap-gray text-lg">Organisatie</label>
+                        <input type="text" id="contactOrganisatie" name="contactOrganisatie"
+                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                            placeholder="Organisatie" />
+                    </div>
                 </div>
 
-                <!-- Verplichtingen -->
-                 <div class="space-y-2">
-                    <label for="verplichtingen" class="block font-heading font-semibold text-kaap-gray text-lg">Verplichtingen</label>
-                    <input type="text" id="verplichtingen" name="verplichtingen"
-                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
-                        placeholder="Logo's, embargo's, etc." />
+                <!-- Contact Telefoon & Email -->
+                <div class="space-y-4">
+                     <div class="space-y-2">
+                        <label for="contactTel" class="block font-heading font-semibold text-kaap-gray text-lg">Telefoonnummer</label>
+                        <input type="tel" id="contactTel" name="contactTel"
+                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                            placeholder="06-12345678" />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="contactEmail" class="block font-heading font-semibold text-kaap-gray text-lg">E-mailadres</label>
+                        <input type="email" id="contactEmail" name="contactEmail"
+                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                            placeholder="naam@organisatie.nl" />
+                    </div>
                 </div>
+            </div>
+
+            <!-- Verplichtingen -->
+             <div class="space-y-2">
+                <label for="verplichtingen" class="block font-heading font-semibold text-kaap-gray text-lg">Verplichtingen</label>
+                <input type="text" id="verplichtingen" name="verplichtingen"
+                    class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                    placeholder="Logo's, embargo's, etc." />
             </div>
 
             <div class="pt-4">
@@ -158,6 +193,96 @@ import Layout from '../layouts/Layout.astro';
 <script>
     const form = document.getElementById('submissionForm') as HTMLFormElement;
     
+    // File Upload Logic
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    const fileList = document.getElementById('fileList');
+    let selectedFiles: File[] = [];
+
+    if (dropzone && fileInput && fileList) {
+        // Click to open
+        dropzone.addEventListener('click', () => fileInput.click());
+
+        // Handle File Selection
+        fileInput.addEventListener('change', (e) => {
+            if (fileInput.files) {
+                handleFiles(Array.from(fileInput.files));
+            }
+        });
+
+        // Drag & Drop Events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e: Event) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e: Event) {
+            dropzone?.classList.add('border-kaap-pink', 'bg-kaap-pink/5');
+        }
+
+        function unhighlight(e: Event) {
+            dropzone?.classList.remove('border-kaap-pink', 'bg-kaap-pink/5');
+        }
+
+        dropzone.addEventListener('drop', (e: DragEvent) => {
+            const dt = e.dataTransfer;
+            const files = dt?.files;
+            if (files) {
+                handleFiles(Array.from(files));
+            }
+        });
+
+        function handleFiles(files: File[]) {
+            selectedFiles = [...selectedFiles, ...files];
+            renderFileList();
+        }
+
+        function renderFileList() {
+            if (!fileList) return;
+            fileList.innerHTML = '';
+            selectedFiles.forEach((file, index) => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center justify-between text-sm bg-gray-50 p-3 rounded-lg border border-gray-100';
+                li.innerHTML = `
+                    <div class="flex items-center gap-2 truncate">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 text-gray-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+                        </svg>
+                        <span class="text-gray-700 truncate">\${file.name}</span>
+                    </div>
+                    <button type="button" class="text-red-400 hover:text-red-600 transition-colors" data-index="\${index}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                `;
+                fileList.appendChild(li);
+            });
+
+            // Add remove listeners
+            fileList.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // prevent triggering form logic if nested
+                    const idx = parseInt((e.currentTarget as HTMLElement).dataset.index || '0');
+                    selectedFiles.splice(idx, 1);
+                    renderFileList();
+                });
+            });
+        }
+    }
+
     // Voice to Text Logic
     const micButton = document.getElementById('micButton');
     const micStatus = document.getElementById('micStatus');
@@ -175,6 +300,7 @@ import Layout from '../layouts/Layout.astro';
         recognition.lang = 'nl-NL';
         recognition.interimResults = true; // Live feedback
         
+        // ... (rest of voice logic remains same) ...
         let isRecording = false;
         let finalTranscript = '';
         let originalText = '';
@@ -182,11 +308,9 @@ import Layout from '../layouts/Layout.astro';
         recognition.onstart = () => {
             isRecording = true;
             micButton?.classList.add('text-red-500', 'bg-red-50');
-            // Change icon to Stop square
             if (micButton) micButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" /></svg>`;
             micStatus?.classList.remove('hidden');
             
-            // Store current text so we append correctly
             if (toelichtingInput) {
                 originalText = toelichtingInput.value;
                 if (originalText && !originalText.endsWith(' ')) originalText += ' ';
@@ -197,14 +321,12 @@ import Layout from '../layouts/Layout.astro';
         recognition.onend = () => {
             isRecording = false;
             micButton?.classList.remove('text-red-500', 'bg-red-50');
-            // Change icon back to Mic
             if (micButton) micButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" /></svg>`;
             micStatus?.classList.add('hidden');
         };
         
         recognition.onresult = (event: any) => {
             let interimTranscript = '';
-            
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
                     finalTranscript += event.results[i][0].transcript;
@@ -212,7 +334,6 @@ import Layout from '../layouts/Layout.astro';
                     interimTranscript += event.results[i][0].transcript;
                 }
             }
-            
             if (toelichtingInput) {
                 toelichtingInput.value = originalText + finalTranscript + interimTranscript;
             }
@@ -235,7 +356,7 @@ import Layout from '../layouts/Layout.astro';
         const formData = new FormData(form);
         const data = Object.fromEntries(formData);
         
-        const timingVal = data.timing === 'Anders' && data.customDate ? `Datum: ${data.customDate}` : data.timing;
+        const timingVal = data.timing === 'Anders' && data.customDate ? `Datum: \${data.customDate}` : data.timing;
 
         // Helper to convert text to sans-serif bold unicode
         const toBoldSans = (text: string) => {
@@ -249,7 +370,7 @@ import Layout from '../layouts/Layout.astro';
         // --- KAAP BRAND LOGIC (The "Communication Specialist" - Strict Edition) ---
         
         // 1. Theme & Emoji Logic
-        const inputText = `${data.wat} ${data.waarom} ${data.toelichting}`.toLowerCase();
+        const inputText = `\${data.wat} \${data.waarom} \${data.toelichting}`.toLowerCase();
         let theme = 'general';
         let themeIcon = ''; 
         
@@ -276,45 +397,49 @@ import Layout from '../layouts/Layout.astro';
             hook = 'De kracht van samenwerken';
         } else if (inputText.includes('test') || inputText.includes('proef') || inputText.includes('pilot')) {
             hook = 'Van idee naar realiteit';
-        } else if (data.wat && data.wat.split(' ').length < 5) {
+        } else if (data.wat && (data.wat as string).split(' ').length < 5) {
             // If the user's input is already short (max 4 words), we use it as the hook
-            hook = data.wat;
+            hook = data.wat as string;
         }
 
         // 3. Construct Narrative
-        const boldHook = toBoldSans(`${hook}`);
+        const boldHook = toBoldSans(`\${hook}`);
         
         // Context sentence
         const introSentence = theme === 'general' 
             ? 'Innovatie vraagt om visie en daadkracht.' 
-            : `De taak is helder: we moeten ${themeIcon} versnellen.`;
+            : `De taak is helder: we moeten \${themeIcon} versnellen.`;
 
         // Partner text
-        const partnerText = data.partners && data.partners.length > 2 
-            ? `Samen met ${toBoldSans(data.partners)} bundelen we onze krachten.`
+        const partnerText = data.partners && (data.partners as string).length > 2 
+            ? `Samen met \${toBoldSans(data.partners as string)} bundelen we onze krachten.`
             : 'Samen met onze partners maken we het verschil.';
 
-        const locationText = data.waar ? `in ${data.waar}` : 'in de regio';
+        const locationText = data.waar ? `in \${data.waar}` : 'in de regio';
         
         // Dynamic Content or Placeholder
         const impactText = data.waarom 
-            ? `Met deze ontwikkeling geven we direct invulling aan onze ambitie: ${data.waarom}.`
+            ? `Met deze ontwikkeling geven we direct invulling aan onze ambitie: \${data.waarom}.`
             : '[AANVULLEN: Wat is het doel/ambitie van dit project?]';
 
         // 4. Build Final Draft (Strict Formatting: Single Title, Internal CTA, Placeholders)
         const socialDraft = `
-${boldHook}
+\${boldHook}
 
-${introSentence} Daarom zetten we ${locationText} een belangrijke nieuwe stap.
+\${introSentence} Daarom zetten we \${locationText} een belangrijke nieuwe stap.
 
-${partnerText} Dit initiatief bewijst dat we in Zeeland niet alleen dromen, maar ook doen.
+\${partnerText} Dit initiatief bewijst dat we in Zeeland niet alleen dromen, maar ook doen.
 
-${impactText} Het biedt concrete kansen om te pionieren en onze positie als kennisregio te versterken.
+\${impactText} Het biedt concrete kansen om te pionieren en onze positie als kennisregio te versterken.
 
 👉 Wil je ook innoveren in de KAAP? Neem dan contact op met @Marc Menu voor de mogelijkheden.
 `.trim();
 
-        const subject = `Content Idee: ${data.wat}`;
+        const fileListText = selectedFiles.length > 0 
+            ? selectedFiles.map(f => `- \${f.name}`).join('\\n')
+            : '(Geen bestanden geselecteerd)';
+
+        const subject = `Content Idee: \${data.wat}`;
         const body = `
 Beste Jorik & Phaedra,
 
@@ -322,44 +447,51 @@ Hierbij een nieuw content idee vanuit de organisatie.
 
 ========================================
 ONDERWERP
-${data.wat}
+\${data.wat}
 ========================================
 
 WANNEER PLAATSEN
-${timingVal}
+\${timingVal}
 
 LOCATIE
-${data.waar || '-'}
+\${data.waar || '-'}
 
 BETROKKEN PARTNERS
-${data.partners}
+\${data.partners}
 
 DOEL / WAAROM
-${data.waarom || '-'}
+\${data.waarom || '-'}
 
 ----------------------------------------
 
-TOELICHTING
-${data.toelichting || '-'}
-
-BEELDMATERIAAL
-${data.media || '(Zie eventuele bijlage)'}
+TOELICHTING (Jouw verhaal)
+\${data.toelichting || '-'}
 
 CONTACTPERSOON
-${data.contact || '-'}
+Naam: \${data.contactNaam || '-'}
+Organisatie: \${data.contactOrganisatie || '-'}
+Tel: \${data.contactTel || '-'}
+Email: \${data.contactEmail || '-'}
 
 VERPLICHTINGEN / EMBARGO
-${data.verplichtingen || 'Geen'}
+\${data.verplichtingen || 'Geen'}
 
 ----------------------------------------
+⚠️ BIJLAGEN (LET OP: HANDMATIG TOEVOEGEN)
+De gebruiker heeft de volgende bestanden geselecteerd.
+Voeg deze aub handmatig toe in je mail-programma:
+
+\${fileListText}
+----------------------------------------
+
 CONCEPT SOCIAL POST (KAAP STIJL)
 ----------------------------------------
-${socialDraft}
+\${socialDraft}
 ----------------------------------------
 
 Met vriendelijke groet,
         `.trim();
 
-        window.location.href = `mailto:jorik@dockwize.nl,phaedra@dockwize.nl?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = `mailto:jorik@dockwize.nl,phaedra@dockwize.nl?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(body)}`;
     });
 </script>
