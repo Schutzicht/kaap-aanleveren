@@ -88,17 +88,17 @@ import Layout from '../layouts/Layout.astro';
                     placeholder="@Partner1, @Partner2..." />
             </div>
 
-            <!-- Jouw verhaal -->
+            <!-- Achtergrondinformatie (Was: Jouw verhaal) -->
             <div class="space-y-2">
                 <div class="flex items-center justify-between">
-                    <label for="toelichting" class="block font-heading font-semibold text-kaap-gray text-lg">Jouw verhaal</label>
+                    <label for="toelichting" class="block font-heading font-semibold text-kaap-gray text-lg">Achtergrondinformatie</label>
                     <button type="button" id="micButton" class="text-kaap-gray hover:text-kaap-pink transition-colors p-2 rounded-full hover:bg-gray-100 hidden group-focus-within:block" title="Spreek toelichting in">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
                         </svg>
                     </button>
                 </div>
-                <p class="text-sm text-kaap-text-gray mb-2">Vertel kort waar het over gaat.</p>
+                <p class="text-sm text-kaap-text-gray mb-2">Wat is de context van dit bericht?</p>
                 <div class="relative">
                     <textarea id="toelichting" name="toelichting" rows="3"
                         class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400 resize-none"
@@ -133,36 +133,20 @@ import Layout from '../layouts/Layout.astro';
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Contact Persoon & Organisatie -->
-                <div class="space-y-4">
-                     <div class="space-y-2">
-                        <label for="contactNaam" class="block font-heading font-semibold text-kaap-gray text-lg">Contactpersoon</label>
-                        <input type="text" id="contactNaam" name="contactNaam"
-                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
-                            placeholder="Naam" />
-                    </div>
-                     <div class="space-y-2">
-                        <label for="contactOrganisatie" class="block font-heading font-semibold text-kaap-gray text-lg">Organisatie</label>
-                        <input type="text" id="contactOrganisatie" name="contactOrganisatie"
-                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
-                            placeholder="Organisatie" />
-                    </div>
+                <!-- Contactpersoon (Vereenvoudigd) -->
+                <div class="space-y-2">
+                    <label for="contactPersoon" class="block font-heading font-semibold text-kaap-gray text-lg">Contactpersoon</label>
+                    <input type="text" id="contactPersoon" name="contactPersoon"
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                        placeholder="Naam & Organisatie" />
                 </div>
 
-                <!-- Contact Telefoon & Email -->
-                <div class="space-y-4">
-                     <div class="space-y-2">
-                        <label for="contactTel" class="block font-heading font-semibold text-kaap-gray text-lg">Telefoonnummer</label>
-                        <input type="tel" id="contactTel" name="contactTel"
-                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
-                            placeholder="06-12345678" />
-                    </div>
-                    <div class="space-y-2">
-                        <label for="contactEmail" class="block font-heading font-semibold text-kaap-gray text-lg">E-mailadres</label>
-                        <input type="email" id="contactEmail" name="contactEmail"
-                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
-                            placeholder="naam@organisatie.nl" />
-                    </div>
+                <!-- Contactgegevens (Vereenvoudigd) -->
+                <div class="space-y-2">
+                    <label for="contactGegevens" class="block font-heading font-semibold text-kaap-gray text-lg">Contactgegevens</label>
+                    <input type="text" id="contactGegevens" name="contactGegevens"
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-pink/50 focus:ring-4 focus:ring-kaap-pink/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                        placeholder="E-mailadres of 06-nummer" />
                 </div>
             </div>
 
@@ -464,14 +448,12 @@ DOEL / WAAROM
 
 ----------------------------------------
 
-TOELICHTING (Jouw verhaal)
+ACHTERGRONDINFORMATIE (Context)
 \${data.toelichting || '-'}
 
-CONTACTPERSOON
-Naam: \${data.contactNaam || '-'}
-Organisatie: \${data.contactOrganisatie || '-'}
-Tel: \${data.contactTel || '-'}
-Email: \${data.contactEmail || '-'}
+CONTACTGEGEVENS
+Naam & Organisatie: \${data.contactPersoon || '-'}
+Tel / Email: \${data.contactGegevens || '-'}
 
 VERPLICHTINGEN / EMBARGO
 \${data.verplichtingen || 'Geen'}
