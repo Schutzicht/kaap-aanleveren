@@ -1,5 +1,5 @@
 {
-  "name": "kaap-aanleverformulier",
+  "name": "kaap-projecten-formulier",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -9,10 +9,16 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^9.5.4",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/outfit": "^5.2.8",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.17.1",
+    "better-sqlite3": "^12.6.2",
     "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.3.5"
   }
 }
