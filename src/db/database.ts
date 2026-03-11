@@ -1,7 +1,9 @@
 import { createClient } from '@libsql/client';
 import "dotenv/config";
 
-const url = process.env.TURSO_DATABASE_URL || "file:projects.db";
+const isVercel = process.env.VERCEL === '1';
+const defaultUrl = isVercel ? "file:/tmp/projects.db" : "file:projects.db";
+const url = process.env.TURSO_DATABASE_URL || defaultUrl;
 const authToken = process.env.TURSO_AUTH_TOKEN;
 
 const db = createClient({
@@ -10,7 +12,9 @@ const db = createClient({
 });
 
 // Initialiseer tabellen als ze nog niet bestaan
-await db.execute(`
+// Wrapped in try/catch om serverless crashes op read-only storage te voorkomen
+try {
+  await db.execute(`
   CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -28,7 +32,7 @@ await db.execute(`
   );
 `);
 
-await db.execute(`
+  await db.execute(`
   CREATE TABLE IF NOT EXISTS content_submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -45,7 +49,7 @@ await db.execute(`
   );
 `);
 
-await db.execute(`
+  await db.execute(`
   CREATE TABLE IF NOT EXISTS event_submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -59,7 +63,7 @@ await db.execute(`
   );
 `);
 
-await db.execute(`
+  await db.execute(`
   CREATE TABLE IF NOT EXISTS partner_submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -72,5 +76,8 @@ await db.execute(`
     mediaLink TEXT
   );
 `);
+} catch (e) {
+  console.error("Kon tabellen niet initialiseren. Als dit lokaal is of zonder Turso, check read-only bestandsystemen:", e);
+}
 
 export default db;
