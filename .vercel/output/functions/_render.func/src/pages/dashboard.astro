@@ -1,0 +1,586 @@
+---
+import Layout from '../layouts/Layout.astro';
+import db from '../db/database';
+
+// Fetch all from both tables
+const projects = db.prepare(`SELECT * FROM projects ORDER BY createdAt DESC`).all() as any[];
+const contentSubs = db.prepare(`SELECT * FROM content_submissions ORDER BY createdAt DESC`).all() as any[];
+const eventSubs = db.prepare(`SELECT * FROM event_submissions ORDER BY createdAt DESC`).all() as any[];
+const partnerSubs = db.prepare(`SELECT * FROM partner_submissions ORDER BY createdAt DESC`).all() as any[];
+
+const getThemeColor = (theme: string) => {
+    switch(theme.toLowerCase()) {
+        case 'water': return 'bg-blue-100 text-blue-800 border-blue-200';
+        case 'voedsel': return 'bg-green-100 text-green-800 border-green-200';
+        case 'energie': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        default: return 'bg-purple-100 text-purple-800 border-purple-200';
+    }
+};
+
+const getThemeIcon = (theme: string) => {
+     switch(theme.toLowerCase()) {
+        case 'water': return '💧';
+        case 'voedsel': return '🍎';
+        case 'energie': return '⚡';
+        default: return '🌍';
+    }
+}
+
+// Logic to derive a theme loosely from text for the Content Cards
+const deriveTheme = (text: string) => {
+    const lower = text.toLowerCase();
+    if (lower.includes('water') || lower.includes('zee') || lower.includes('kust')) return 'water';
+    if (lower.includes('voedsel') || lower.includes('food') || lower.includes('agro')) return 'voedsel';
+    if (lower.includes('energie') || lower.includes('stroom') || lower.includes('wind')) return 'energie';
+    return 'algemeen';
+};
+---
+
+<Layout title="KAAP Projecten Dashboard">
+    <div class="space-y-10 reveal active max-w-7xl mx-auto pb-20">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-heading font-bold text-kaap-gray">
+                    Centraal <span class="text-kaap-gradient">Dashboard</span>
+                </h1>
+                <p class="text-kaap-text-gray mt-2">Overzicht van alle binnengekomen aanmeldingen.</p>
+            </div>
+            <a href="/" class="bg-white border border-gray-200 hover:border-kaap-pink px-5 py-2.5 rounded-xl font-semibold text-kaap-gray hover:text-kaap-pink transition-colors inline-flex items-center gap-2 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Nieuwe Invoer
+            </a>
+        </div>
+
+        <!-- Custom Tabs -->
+        <div class="bg-white p-2 rounded-2xl border border-gray-100 shadow-sm inline-flex flex-wrap gap-2">
+            <button id="tab-projects" class="tab-btn active px-6 py-2.5 rounded-xl text-sm font-bold transition-all bg-gray-100 text-kaap-gray shadow-inner">
+                Projecten ({projects.length})
+            </button>
+            <button id="tab-content" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-kaap-text-gray hover:bg-gray-50 transition-all">
+                Social Content ({contentSubs.length})
+            </button>
+            <button id="tab-events" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-kaap-text-gray hover:bg-gray-50 transition-all">
+                Events ({eventSubs.length})
+            </button>
+            <button id="tab-partners" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-kaap-text-gray hover:bg-gray-50 transition-all">
+                Partners ({partnerSubs.length})
+            </button>
+        </div>
+
+        <!-- PROJECTS PANE -->
+        <div id="pane-projects" class="pane block space-y-8 animate-fade-in">
+            {projects.length === 0 ? (
+                <div class="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm text-center">
+                    <div class="text-4xl mb-4">📭</div>
+                    <h3 class="text-xl font-heading font-bold text-kaap-gray mb-2">Geen projecten gevonden</h3>
+                    <p class="text-kaap-text-gray">Er zijn nog geen projecten aangemeld.</p>
+                </div>
+            ) : (
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {projects.map((p) => (
+                        <div class="bg-white rounded-3xl shadow-lg shadow-gray-200/40 border border-gray-100 overflow-hidden flex flex-col relative group">
+                            
+                            <!-- Top Accent Line based on theme -->
+                            <div class={`absolute top-0 left-0 w-full h-1.5 opacity-50 ${getThemeColor(p.transitionTheme).split(' ')[0]}`}></div>
+
+                            <div class="p-8 flex-grow space-y-6">
+                                <!-- Header Info -->
+                                <div class="space-y-3">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <h2 class="text-2xl font-heading font-bold text-kaap-gray leading-tight group-hover:text-kaap-pink transition-colors">
+                                            {p.title}
+                                        </h2>
+                                        <span class={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap ${getThemeColor(p.transitionTheme)}`}>
+                                            <span>{getThemeIcon(p.transitionTheme)}</span>
+                                            {p.transitionTheme}
+                                        </span>
+                                    </div>
+                                    <p class="text-kaap-pink font-semibold">
+                                        {p.summary}
+                                    </p>
+                                </div>
+
+                                <!-- Meta Grid -->
+                                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                                    <div class="space-y-1">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Datum</span>
+                                        <p class="text-sm font-medium text-kaap-gray">{new Date(p.createdAt).toLocaleDateString('nl-NL', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' })}</p>
+                                    </div>
+                                    {p.partners && (
+                                        <div class="space-y-1">
+                                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Partners</span>
+                                            <p class="text-sm font-medium text-kaap-gray line-clamp-2" title={p.partners}>{p.partners}</p>
+                                        </div>
+                                    )}
+                                    {(p.contactName || p.contactEmail) && (
+                                        <div class="space-y-1 col-span-2">
+                                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Contact</span>
+                                            <p class="text-sm font-medium text-kaap-gray">
+                                                {p.contactName} {p.contactEmail && <span class="text-gray-400">({p.contactEmail})</span>}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <!-- Full Description -->
+                                <div class="space-y-2">
+                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Beschrijving</span>
+                                    <div class="prose prose-sm text-kaap-text-gray max-w-none">
+                                        <p class="line-clamp-4 leading-relaxed">{p.description}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions Action Bar -->
+                            <div class="bg-gray-50 p-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto">
+                                <div class="flex gap-4">
+                                    {p.mediaLinks ? (
+                                        <a href={p.mediaLinks.startsWith('http') ? p.mediaLinks : `https://${p.mediaLinks}`} target="_blank" class="text-sm font-semibold text-kaap-purple hover:text-kaap-pink flex items-center gap-1.5 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+                                            </svg>
+                                            Media / Bijlagen
+                                        </a>
+                                    ) : null}
+                                    {p.externalLinks ? (
+                                        <a href={p.externalLinks.startsWith('http') ? p.externalLinks : `https://${p.externalLinks}`} target="_blank" class="text-sm font-semibold text-kaap-blue hover:text-kaap-pink flex items-center gap-1.5 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                                            </svg>
+                                            Externe Link
+                                        </a>
+                                    ) : null}
+                                </div>
+                                
+                                <!-- Pass standard structure to client-side script for copying -->
+                                <button 
+                                    class="copy-btn copy-project bg-white border border-gray-200 hover:border-black px-4 py-2 rounded-lg text-sm font-bold text-kaap-gray hover:bg-black hover:text-white transition-all shadow-sm flex items-center gap-2"
+                                    data-title={p.title}
+                                    data-summary={p.summary}
+                                    data-desc={p.description}
+                                    data-theme={'[' + p.transitionTheme + ' - THEMA]'}
+                                    data-partners={'[Partners: ' + p.partners + ']'}
+                                    data-contact={'[Contact: ' + p.contactName + ' ' + p.contactEmail + ']'}
+                                    data-cta={'[Call to Action: ' + p.callToAction + ']'}
+                                    data-obl={'[Verplichtingen: ' + p.obligations + ']'}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                    </svg>
+                                    Website Tekst Kopiëren
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+
+        <!-- CONTENT PANE -->
+        <div id="pane-content" class="pane hidden space-y-8 animate-fade-in">
+             {contentSubs.length === 0 ? (
+                <div class="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm text-center">
+                    <div class="text-4xl mb-4">📭</div>
+                    <h3 class="text-xl font-heading font-bold text-kaap-gray mb-2">Geen content ideeën gevonden</h3>
+                    <p class="text-kaap-text-gray">Er zijn nog geen content aanmeldingen binnengekomen.</p>
+                </div>
+            ) : (
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {contentSubs.map((c) => {
+                        const theme = deriveTheme(c.wat + ' ' + c.toelichting);
+                        return (
+                        <div class="bg-white rounded-3xl shadow-lg shadow-gray-200/40 border border-gray-100 overflow-hidden flex flex-col relative group">
+                            
+                            <div class={`absolute top-0 left-0 w-full h-1.5 opacity-50 ${getThemeColor(theme).split(' ')[0]}`}></div>
+
+                            <div class="p-8 flex-grow space-y-6">
+                                <div class="flex items-start justify-between gap-4">
+                                    <h2 class="text-2xl font-heading font-bold text-kaap-gray leading-tight group-hover:text-kaap-pink transition-colors">
+                                        {c.wat}
+                                    </h2>
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap bg-pink-50 text-kaap-pink border-kaap-pink/20">
+                                        🗓 {c.timing}
+                                    </span>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                                     <div class="space-y-1">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Waar</span>
+                                        <p class="text-sm font-medium text-kaap-gray">{c.waar || '-'}</p>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Beoogd Doel</span>
+                                        <p class="text-sm font-medium text-kaap-gray">{c.waarom || '-'}</p>
+                                    </div>
+                                    <div class="space-y-1 col-span-2">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Partners</span>
+                                        <p class="text-sm font-medium text-kaap-gray">{c.partners}</p>
+                                    </div>
+                                    {c.contactPersoon && (
+                                         <div class="space-y-1 col-span-2">
+                                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Contact & Info</span>
+                                            <p class="text-sm font-medium text-kaap-gray">{c.contactPersoon} {c.contactGegevens ? `(${c.contactGegevens})` : '' }</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div class="space-y-2">
+                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Toelichting</span>
+                                    <div class="bg-gray-50 rounded-xl p-4 text-sm text-kaap-text-gray italic">
+                                        "{c.toelichting || 'Geen toelichting ingevoerd.'}"
+                                    </div>
+                                </div>
+                                
+                                {c.verplichtingen && (
+                                     <div class="space-y-2">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Verplichtingen</span>
+                                        <p class="text-sm font-medium text-kaap-pink">{c.verplichtingen}</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <!-- Actions Action Bar -->
+                            <div class="bg-gray-50 p-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto">
+                                <div class="flex gap-4">
+                                    {c.fotos ? (
+                                        <a href={c.fotos.startsWith('http') ? c.fotos : `https://${c.fotos}`} target="_blank" class="text-sm font-semibold text-kaap-purple hover:text-kaap-pink flex items-center gap-1.5 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+                                            </svg>
+                                            Beelden
+                                        </a>
+                                    ) : null}
+                                </div>
+                                
+                                <button 
+                                    class="copy-btn copy-social bg-white border border-gray-200 hover:border-black px-4 py-2 rounded-lg text-sm font-bold text-kaap-gray hover:bg-black hover:text-white transition-all shadow-sm flex items-center gap-2"
+                                    data-wat={c.wat}
+                                    data-waar={c.waar}
+                                    data-waarom={c.waarom}
+                                    data-partners={c.partners}
+                                    data-theme={theme}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                    </svg>
+                                    Genereer Concept Post
+                                </button>
+                            </div>
+                        </div>
+                    )})}
+                </div>
+            )}
+        </div>
+
+        <!-- EVENTS PANE -->
+        <div id="pane-events" class="pane hidden space-y-8 animate-fade-in">
+             {eventSubs.length === 0 ? (
+                <div class="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm text-center">
+                    <div class="text-4xl mb-4">📭</div>
+                    <h3 class="text-xl font-heading font-bold text-kaap-gray mb-2">Geen events gevonden</h3>
+                    <p class="text-kaap-text-gray">Er zijn nog geen events aangemeld.</p>
+                </div>
+            ) : (
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {eventSubs.map((e) => {
+                        return (
+                        <div class="bg-white rounded-3xl shadow-lg shadow-gray-200/40 border border-gray-100 overflow-hidden flex flex-col relative group">
+                            <div class="absolute top-0 left-0 w-full h-1.5 opacity-50 bg-orange-500"></div>
+
+                            <div class="p-8 flex-grow space-y-6">
+                                <div class="flex items-start justify-between gap-4">
+                                    <h2 class="text-2xl font-heading font-bold text-kaap-gray leading-tight group-hover:text-orange-500 transition-colors">
+                                        {e.titel}
+                                    </h2>
+                                    <span class={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap ${getThemeColor(e.transitiethema)}`}>
+                                        <span>{getThemeIcon(e.transitiethema)}</span>
+                                        {e.transitiethema}
+                                    </span>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                                     <div class="space-y-1">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Wanneer</span>
+                                        <p class="text-sm font-medium text-kaap-gray">{e.datumTijd}</p>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Waar</span>
+                                        <p class="text-sm font-medium text-kaap-gray">{e.locatie || 'TBD'}</p>
+                                    </div>
+                                    {e.contactPersoon && (
+                                         <div class="space-y-1 col-span-2">
+                                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Interne Contactpersoon</span>
+                                            <p class="text-sm font-medium text-kaap-gray">{e.contactPersoon}</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div class="space-y-2">
+                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Programma / Omschrijving</span>
+                                    <div class="prose prose-sm text-kaap-text-gray max-w-none">
+                                        <p class="line-clamp-4 leading-relaxed">{e.omschrijving}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto">
+                                <div class="flex gap-4">
+                                    {e.inschrijflink ? (
+                                        <a href={e.inschrijflink.startsWith('http') ? e.inschrijflink : `https://${e.inschrijflink}`} target="_blank" class="text-sm font-semibold text-kaap-blue hover:text-orange-500 flex items-center gap-1.5 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                                            </svg>
+                                            Inschrijflink Testen
+                                        </a>
+                                    ) : (
+                                        <span class="text-sm text-gray-400">Gezien inschrijflink</span>
+                                    )}
+                                </div>
+                                
+                                <button 
+                                    class="copy-btn copy-event bg-white border border-gray-200 hover:border-black px-4 py-2 rounded-lg text-sm font-bold text-kaap-gray hover:bg-black hover:text-white transition-all shadow-sm flex items-center gap-2"
+                                    data-title={e.titel}
+                                    data-datetime={e.datumTijd}
+                                    data-loc={e.locatie}
+                                    data-theme={e.transitiethema}
+                                    data-desc={e.omschrijving}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                    </svg>
+                                    Agenda Tekst Kopiëren
+                                </button>
+                            </div>
+                        </div>
+                    )})}
+                </div>
+            )}
+        </div>
+
+        <!-- PARTNERS PANE -->
+        <div id="pane-partners" class="pane hidden space-y-8 animate-fade-in">
+             {partnerSubs.length === 0 ? (
+                <div class="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm text-center">
+                    <div class="text-4xl mb-4">📭</div>
+                    <h3 class="text-xl font-heading font-bold text-kaap-gray mb-2">Geen partners gevonden</h3>
+                    <p class="text-kaap-text-gray">Er zijn nog geen nieuwe partners aangemeld.</p>
+                </div>
+            ) : (
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {partnerSubs.map((p) => {
+                        return (
+                        <div class="bg-white rounded-3xl shadow-lg shadow-gray-200/40 border border-gray-100 overflow-hidden flex flex-col relative group">
+                            <div class="absolute top-0 left-0 w-full h-1.5 opacity-50 bg-blue-500"></div>
+
+                            <div class="p-8 flex-grow space-y-6">
+                                <div class="flex items-start justify-between gap-4">
+                                    <h2 class="text-2xl font-heading font-bold text-kaap-gray leading-tight group-hover:text-blue-500 transition-colors">
+                                        {p.partnerNaam}
+                                    </h2>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap bg-blue-50 text-blue-500 border-blue-200">
+                                        💡 {p.expertise}
+                                    </span>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                                     {p.contactPersoon && (
+                                         <div class="space-y-1 col-span-2">
+                                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Contact</span>
+                                            <p class="text-sm font-medium text-kaap-gray">
+                                                {p.contactPersoon} {p.emailadres ? <span class="text-blue-500">({p.emailadres})</span> : ''}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div class="space-y-2">
+                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Rol van Partner</span>
+                                    <div class="prose prose-sm text-kaap-text-gray max-w-none">
+                                        <p class="line-clamp-4 leading-relaxed">{p.omschrijving}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto">
+                                <div class="flex gap-4">
+                                    {p.websiteUrl ? (
+                                        <a href={p.websiteUrl.startsWith('http') ? p.websiteUrl : `https://${p.websiteUrl}`} target="_blank" class="text-sm font-semibold text-kaap-blue hover:text-blue-500 flex items-center gap-1.5 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                                            </svg>
+                                            Website
+                                        </a>
+                                    ) : null}
+                                    {p.mediaLink ? (
+                                        <a href={p.mediaLink.startsWith('http') ? p.mediaLink : `https://${p.mediaLink}`} target="_blank" class="text-sm font-semibold text-kaap-purple hover:text-blue-500 flex items-center gap-1.5 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+                                            </svg>
+                                            Logo's
+                                        </a>
+                                    ) : null}
+                                </div>
+                                
+                                <button 
+                                    class="copy-btn copy-partner bg-white border border-gray-200 hover:border-black px-4 py-2 rounded-lg text-sm font-bold text-kaap-gray hover:bg-black hover:text-white transition-all shadow-sm flex items-center gap-2"
+                                    data-name={p.partnerNaam}
+                                    data-exp={p.expertise}
+                                    data-desc={p.omschrijving}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                    </svg>
+                                    Partner Profiel Kopiëren
+                                </button>
+                            </div>
+                        </div>
+                    )})}
+                </div>
+            )}
+        </div>
+    </div>
+</Layout>
+
+<script>
+    // --- UI Tabs Logic ---
+    const tabs = ['projects', 'content', 'events', 'partners'];
+    const panes = tabs.map(t => document.getElementById(`pane-${t}`));
+    const btns = tabs.map(t => document.getElementById(`tab-${t}`));
+
+    const switchTab = (activeTab: string) => {
+        tabs.forEach((tab, index) => {
+            const btn = btns[index];
+            const pane = panes[index];
+            
+            if (tab === activeTab) {
+                btn?.classList.replace('text-kaap-text-gray', 'text-kaap-gray');
+                btn?.classList.replace('hover:bg-gray-50', 'bg-gray-100');
+                btn?.classList.add('shadow-inner');
+                pane?.classList.replace('hidden', 'block');
+            } else {
+                btn?.classList.replace('text-kaap-gray', 'text-kaap-text-gray');
+                btn?.classList.replace('bg-gray-100', 'hover:bg-gray-50');
+                btn?.classList.remove('shadow-inner');
+                pane?.classList.replace('block', 'hidden');
+            }
+        });
+    };
+
+    btns.forEach((btn, idx) => {
+        btn?.addEventListener('click', () => switchTab(tabs[idx]));
+    });
+
+
+    // --- Context Copy Logic ---
+    const copyBtns = document.querySelectorAll('.copy-btn');
+    
+    // Helper to bold sans (KAAP brand logic)
+    const toBoldSans = (text: string) => {
+        if (!text) return '';
+        const map: {[key: string]: string} = {
+            'A': '𝗔', 'B': '𝗕', 'C': '𝗖', 'D': '𝗗', 'E': '𝗘', 'F': '𝗙', 'G': '𝗚', 'H': '𝗛', 'I': '𝗜', 'J': '𝗝', 'K': '𝗞', 'L': '𝗟', 'M': '𝗠', 'N': '𝗡', 'O': '𝗢', 'P': '𝗣', 'Q': '𝗤', 'R': '𝗥', 'S': '𝗦', 'T': '𝗧', 'U': '𝗨', 'V': '𝗩', 'W': '𝗪', 'X': '𝗫', 'Y': '𝗬', 'Z': '𝗭',
+            'a': '𝗮', 'b': '𝗯', 'c': '𝗰', 'd': '𝗱', 'e': '𝗲', 'f': '𝗳', 'g': '𝗴', 'h': '𝗵', 'i': '𝗶', 'j': '𝗷', 'k': '𝗸', 'l': '𝗹', 'm': '𝗺', 'n': '𝗻', 'o': '𝗼', 'p': '𝗽', 'q': '𝗾', 'r': '𝗿', 's': '𝘀', 't': '𝘁', 'u': '𝘂', 'v': '𝘃', 'w': '𝘄', 'x': '𝘅', 'y': '𝘆', 'z': '𝘇'
+        };
+        return text.split('').map(char => map[char] || char).join('');
+    };
+
+    copyBtns.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const target = e.currentTarget as HTMLButtonElement;
+            const ds = target.dataset;
+            let template = '';
+            
+            if (target.classList.contains('copy-project')) {
+                // Formatting for Projects
+                template = `
+### ${ds.title}
+${ds.summary}
+
+${ds.desc}
+
+${ds.theme}
+${ds.partners !== '[Partners: ]' && ds.partners !== '[Partners: undefined]' && ds.partners !== '[Partners: null]' ? ds.partners : ''}
+${ds.cta !== '[Call to Action: ]' && ds.cta !== '[Call to Action: undefined]' && ds.cta !== '[Call to Action: null]' ? ds.cta : ''}
+${ds.obl !== '[Verplichtingen: ]' && ds.obl !== '[Verplichtingen: undefined]' && ds.obl !== '[Verplichtingen: null]' ? ds.obl : ''}
+${ds.contact !== '[Contact:  ]' && ds.contact !== '[Contact: undefined undefined]' && ds.contact !== '[Contact: null null]' ? ds.contact : ''}
+`.trim();
+            } else if (target.classList.contains('copy-social')) {
+                // Formatting for Social Content
+                let hook = 'Innovatie in Zeeland';
+                const watStr = ds.wat || '';
+                if (watStr.toLowerCase().includes('opening') || watStr.toLowerCase().includes('lancering')) {
+                    hook = 'Nieuwe mijlpaal bereikt';
+                } else if (watStr.toLowerCase().includes('samen') || watStr.toLowerCase().includes('partner')) {
+                    hook = 'De kracht van samenwerken';
+                } else if (watStr.split(' ').length < 5) {
+                    hook = watStr;
+                }
+                const boldHook = toBoldSans(hook);
+
+                let themeIcon = '🌍';
+                if(ds.theme === 'water') themeIcon = '💧';
+                if(ds.theme === 'voedsel') themeIcon = '🍎';
+                if(ds.theme === 'energie') themeIcon = '⚡';
+
+                const introSentence = ds.theme === 'algemeen' ? 'Innovatie vraagt om visie en daadkracht.' : `De taak is helder: we moeten ${themeIcon} versnellen.`;
+                const locationText = ds.waar ? `in ${ds.waar}` : 'in de regio';
+                const partnerText = ds.partners && ds.partners.length > 2 ? `Samen met ${toBoldSans(ds.partners)} bundelen we onze krachten.` : 'Samen met onze partners maken we het verschil.';
+                const impactText = ds.waarom ? `Met deze ontwikkeling geven we direct invulling aan onze ambitie: ${ds.waarom}.` : '';
+
+                template = `
+${boldHook}
+
+${introSentence} Daarom zetten we ${locationText} een belangrijke nieuwe stap.
+${partnerText} Dit initiatief bewijst dat we in Zeeland niet alleen dromen, maar ook doen.
+${impactText} Het biedt concrete kansen om te pionieren en onze positie als kennisregio te versterken.
+
+👉 Wil je ook innoveren op Innovatiepunt KAAP? Neem dan contact op met @Marc Menu voor de mogelijkheden.
+`.trim();
+            } else if (target.classList.contains('copy-event')) {
+                // Formatting for Events
+                template = `
+### EVENT: ${ds.title}
+Datum/Tijd: ${ds.datetime}
+Locatie: ${ds.loc || 'TBD'}
+Thema: [${ds.theme}]
+
+**Programma & Omschrijving:**
+${ds.desc}
+`.trim();
+            } else if (target.classList.contains('copy-partner')) {
+                // Formatting for Partners
+                template = `
+### PARTNER: ${ds.name}
+Expertise: ${ds.exp}
+
+**Rol van de Partner:**
+${ds.desc}
+`.trim();
+            }
+
+            try {
+                await navigator.clipboard.writeText(template);
+                
+                // Visual feedback
+                const origHtml = target.innerHTML;
+                target.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
+                    Gekopieerd!
+                `;
+                target.classList.add('bg-black', 'text-white');
+                
+                setTimeout(() => {
+                    target.innerHTML = origHtml;
+                    target.classList.remove('bg-black', 'text-white');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy', err);
+                alert('Kopiëren mislukt.');
+            }
+        });
+    });
+</script>

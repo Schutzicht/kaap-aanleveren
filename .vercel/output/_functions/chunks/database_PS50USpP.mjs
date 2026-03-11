@@ -1,14 +1,9 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 
-// Zorg er voor dat de database schrijfbaar is (Vercel serverless gebruikt read-only oplag, behalve in /tmp)
-const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
-const dbPath = isVercel ? '/tmp/projects.db' : path.resolve(process.cwd(), 'projects.db');
+const dbPath = path.resolve(process.cwd(), "projects.db");
 const db = new Database(dbPath);
-
-db.pragma('journal_mode = WAL');
-
-// Initialiseer tabellen als ze nog niet bestaan
+db.pragma("journal_mode = WAL");
 db.exec(`
   CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -66,4 +61,4 @@ db.exec(`
   );
 `);
 
-export default db;
+export { db as d };

@@ -1,0 +1,63 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^/_astro/(.*)$",
+			"headers": {
+				"cache-control": "public, max-age=31536000, immutable"
+			},
+			"continue": true
+		},
+		{
+			"src": "^/_server-islands/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/_image/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/submit-content/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/submit-event/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/submit-partner/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/submit-project/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/content/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/event/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/partner/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/project/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/$",
+			"dest": "_render"
+		}
+	]
+}
