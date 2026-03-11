@@ -12,13 +12,13 @@
     "@astrojs/vercel": "^9.0.5",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/outfit": "^5.2.8",
+    "@libsql/client": "^0.17.0",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.17.1",
-    "better-sqlite3": "^12.6.2",
+    "dotenv": "^17.3.1",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.3.5"
   }
 }

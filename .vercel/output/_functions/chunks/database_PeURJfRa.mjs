@@ -1,10 +1,13 @@
-import Database from 'better-sqlite3';
-import path from 'path';
+import { createClient } from '@libsql/client';
+import 'dotenv/config';
 
-const dbPath = path.resolve(process.cwd(), "projects.db");
-const db = new Database(dbPath);
-db.pragma("journal_mode = WAL");
-db.exec(`
+const url = process.env.TURSO_DATABASE_URL || "file:projects.db";
+const authToken = process.env.TURSO_AUTH_TOKEN;
+const db = createClient({
+  url,
+  authToken
+});
+await db.execute(`
   CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -20,7 +23,8 @@ db.exec(`
     callToAction TEXT,
     obligations TEXT
   );
-
+`);
+await db.execute(`
   CREATE TABLE IF NOT EXISTS content_submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -35,7 +39,8 @@ db.exec(`
     contactGegevens TEXT,
     verplichtingen TEXT
   );
-
+`);
+await db.execute(`
   CREATE TABLE IF NOT EXISTS event_submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -47,7 +52,8 @@ db.exec(`
     inschrijflink TEXT,
     contactPersoon TEXT
   );
-
+`);
+await db.execute(`
   CREATE TABLE IF NOT EXISTS partner_submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,

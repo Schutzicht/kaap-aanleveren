@@ -2,11 +2,17 @@
 import Layout from '../layouts/Layout.astro';
 import db from '../db/database';
 
-// Fetch all from both tables
-const projects = db.prepare(`SELECT * FROM projects ORDER BY createdAt DESC`).all() as any[];
-const contentSubs = db.prepare(`SELECT * FROM content_submissions ORDER BY createdAt DESC`).all() as any[];
-const eventSubs = db.prepare(`SELECT * FROM event_submissions ORDER BY createdAt DESC`).all() as any[];
-const partnerSubs = db.prepare(`SELECT * FROM partner_submissions ORDER BY createdAt DESC`).all() as any[];
+const projectsRes = await db.execute(`SELECT * FROM projects ORDER BY createdAt DESC`);
+const projects = projectsRes.rows;
+
+const contentSubsRes = await db.execute(`SELECT * FROM content_submissions ORDER BY createdAt DESC`);
+const contentSubs = contentSubsRes.rows;
+
+const eventSubsRes = await db.execute(`SELECT * FROM event_submissions ORDER BY createdAt DESC`);
+const eventSubs = eventSubsRes.rows;
+
+const partnerSubsRes = await db.execute(`SELECT * FROM partner_submissions ORDER BY createdAt DESC`);
+const partnerSubs = partnerSubsRes.rows;
 
 const getThemeColor = (theme: string) => {
     switch(theme.toLowerCase()) {

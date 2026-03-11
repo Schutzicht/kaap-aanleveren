@@ -21,12 +21,13 @@ export const POST: APIRoute = async ({ request }) => {
             });
         }
 
-        const stmt = db.prepare(`
+        await db.execute({
+            sql: `
         INSERT INTO partner_submissions (partnerNaam, websiteUrl, expertise, omschrijving, contactPersoon, emailadres, mediaLink)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-    `);
-
-        stmt.run(partnerNaam, websiteUrl, expertise, omschrijving, contactPersoon, emailadres, mediaLink);
+    `,
+            args: [partnerNaam, websiteUrl, expertise, omschrijving, contactPersoon, emailadres, mediaLink]
+        });
 
         return new Response(JSON.stringify({ success: true, message: 'Nieuwe partner succesvol doorgegeven!' }), {
             status: 200,

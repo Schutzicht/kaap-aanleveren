@@ -1,15 +1,16 @@
-import Database from 'better-sqlite3';
-import path from 'path';
+import { createClient } from '@libsql/client';
+import "dotenv/config";
 
-// Zorg er voor dat de database schrijfbaar is (Vercel serverless gebruikt read-only oplag, behalve in /tmp)
-const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
-const dbPath = isVercel ? '/tmp/projects.db' : path.resolve(process.cwd(), 'projects.db');
-const db = new Database(dbPath);
+const url = process.env.TURSO_DATABASE_URL || "file:projects.db";
+const authToken = process.env.TURSO_AUTH_TOKEN;
 
-db.pragma('journal_mode = WAL');
+const db = createClient({
+  url,
+  authToken,
+});
 
 // Initialiseer tabellen als ze nog niet bestaan
-db.exec(`
+await db.execute(`
   CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -25,7 +26,9 @@ db.exec(`
     callToAction TEXT,
     obligations TEXT
   );
+`);
 
+await db.execute(`
   CREATE TABLE IF NOT EXISTS content_submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -40,7 +43,9 @@ db.exec(`
     contactGegevens TEXT,
     verplichtingen TEXT
   );
+`);
 
+await db.execute(`
   CREATE TABLE IF NOT EXISTS event_submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -52,7 +57,9 @@ db.exec(`
     inschrijflink TEXT,
     contactPersoon TEXT
   );
+`);
 
+await db.execute(`
   CREATE TABLE IF NOT EXISTS partner_submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,

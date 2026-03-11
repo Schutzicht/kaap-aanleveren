@@ -1,14 +1,18 @@
 import { e as createComponent, k as renderComponent, l as renderScript, r as renderTemplate, m as maybeRenderHead, g as addAttribute } from '../chunks/astro/server_rqQWen4l.mjs';
 import 'piccolore';
 import { $ as $$Layout } from '../chunks/Layout_DE1Xm42A.mjs';
-import { d as db } from '../chunks/database_PS50USpP.mjs';
+import { d as db } from '../chunks/database_PeURJfRa.mjs';
 export { renderers } from '../renderers.mjs';
 
 const $$Dashboard = createComponent(async ($$result, $$props, $$slots) => {
-  const projects = db.prepare(`SELECT * FROM projects ORDER BY createdAt DESC`).all();
-  const contentSubs = db.prepare(`SELECT * FROM content_submissions ORDER BY createdAt DESC`).all();
-  const eventSubs = db.prepare(`SELECT * FROM event_submissions ORDER BY createdAt DESC`).all();
-  const partnerSubs = db.prepare(`SELECT * FROM partner_submissions ORDER BY createdAt DESC`).all();
+  const projectsRes = await db.execute(`SELECT * FROM projects ORDER BY createdAt DESC`);
+  const projects = projectsRes.rows;
+  const contentSubsRes = await db.execute(`SELECT * FROM content_submissions ORDER BY createdAt DESC`);
+  const contentSubs = contentSubsRes.rows;
+  const eventSubsRes = await db.execute(`SELECT * FROM event_submissions ORDER BY createdAt DESC`);
+  const eventSubs = eventSubsRes.rows;
+  const partnerSubsRes = await db.execute(`SELECT * FROM partner_submissions ORDER BY createdAt DESC`);
+  const partnerSubs = partnerSubsRes.rows;
   const getThemeColor = (theme) => {
     switch (theme.toLowerCase()) {
       case "water":
