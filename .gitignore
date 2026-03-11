@@ -1,5 +1,5 @@
 # build output
-dist/
+# dist/ (Removed to fix Vercel Node File Trace)
 # OS generated files
 .DS_Store
 .DS_Store?
