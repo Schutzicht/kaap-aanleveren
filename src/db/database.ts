@@ -1,14 +1,16 @@
-import { createClient } from '@libsql/client';
+import { createClient } from '@libsql/client/web';
 import "dotenv/config";
 
-const isVercel = process.env.VERCEL === '1';
-const defaultUrl = isVercel ? "file:/tmp/projects.db" : "file:projects.db";
-const url = process.env.TURSO_DATABASE_URL || defaultUrl;
+const url = process.env.TURSO_DATABASE_URL;
 const authToken = process.env.TURSO_AUTH_TOKEN;
 
+if (!url) {
+  console.error("CRITICAL: TURSO_DATABASE_URL is not set. The app will fail to connect.");
+}
+
 const db = createClient({
-  url,
-  authToken,
+  url: url || "libsql://default-placeholder.turso.io", // voorkomt crash in createClient, maar db operaties zullen falen als url invalid is
+  authToken: authToken || "",
 });
 
 // Initialiseer tabellen als ze nog niet bestaan
