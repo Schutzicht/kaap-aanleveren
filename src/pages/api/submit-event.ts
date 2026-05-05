@@ -21,13 +21,13 @@ export const POST: APIRoute = async ({ request }) => {
             });
         }
 
-        await db.execute({
-            sql: `
+        await db.execute(
+            `
         INSERT INTO event_submissions (titel, datumTijd, locatie, transitiethema, omschrijving, inschrijflink, contactPersoon)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `,
-            args: [titel, datumTijd, locatie, transitiethema, omschrijving, inschrijflink, contactPersoon]
-        });
+            [titel, datumTijd, locatie, transitiethema, omschrijving, inschrijflink, contactPersoon]
+        );
 
         return new Response(JSON.stringify({ success: true, message: 'Event succesvol aangemeld!' }), {
             status: 200,

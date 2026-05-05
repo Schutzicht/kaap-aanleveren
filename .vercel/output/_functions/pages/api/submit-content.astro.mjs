@@ -1,4 +1,4 @@
-import { d as db } from '../../chunks/database_D_0gIzXk.mjs';
+import { d as db } from '../../chunks/database_DgLR3aOz.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const POST = async ({ request }) => {
@@ -22,13 +22,13 @@ const POST = async ({ request }) => {
         headers: { "Content-Type": "application/json" }
       });
     }
-    await db.execute({
-      sql: `
+    await db.execute(
+      `
         INSERT INTO content_submissions (wat, waar, waarom, timing, partners, toelichting, fotos, contactPersoon, contactGegevens, verplichtingen)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
-      args: [wat, waar, waarom, timing, partners, toelichting, fotos, contactPersoon, contactGegevens, verplichtingen]
-    });
+      [wat, waar, waarom, timing, partners, toelichting, fotos, contactPersoon, contactGegevens, verplichtingen]
+    );
     return new Response(JSON.stringify({ success: true, message: "Content idee succesvol ingediend!" }), {
       status: 200,
       headers: { "Content-Type": "application/json" }

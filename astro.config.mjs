@@ -12,6 +12,9 @@ export default defineConfig({
         },
         imageService: true,
     }),
+    security: {
+        checkOrigin: false,
+    },
     vite: {
         plugins: [tailwindcss()]
     }

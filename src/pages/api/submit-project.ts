@@ -24,13 +24,13 @@ export const POST: APIRoute = async ({ request }) => {
             });
         }
 
-        await db.execute({
-            sql: `
+        await db.execute(
+            `
         INSERT INTO projects (title, summary, description, transitionTheme, partners, contactName, contactEmail, mediaLinks, externalLinks, callToAction, obligations)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
-            args: [title, summary, description, transitionTheme, partners, contactName, contactEmail, mediaLinks, externalLinks, callToAction, obligations]
-        });
+            [title, summary, description, transitionTheme, partners, contactName, contactEmail, mediaLinks, externalLinks, callToAction, obligations]
+        );
 
         return new Response(JSON.stringify({ success: true, message: 'Project succesvol ingediend!' }), {
             status: 200,

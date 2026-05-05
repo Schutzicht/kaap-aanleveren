@@ -1,0 +1,543 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="KAAP Expositie Project Aanleveren">
+    <div class="space-y-10 reveal active pt-4">
+        <div class="max-w-7xl mx-auto">
+            <a href="/" class="inline-flex items-center gap-2 text-kaap-text-gray hover:text-kaap-water font-semibold transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+                Terug naar overzicht
+            </a>
+        </div>
+        <div class="text-center space-y-4 -mt-4">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-white border border-gray-200 text-sm font-semibold text-kaap-water mb-2 shadow-sm">
+                Project aanleveren voor expositie
+            </div>
+            <h1 class="text-4xl md:text-5xl font-heading font-bold text-kaap-gray leading-tight">
+                Lever jouw project aan voor <span class="text-kaap-gradient">KAAP expositie</span>
+            </h1>
+            <p class="text-kaap-text-gray text-lg max-w-2xl mx-auto leading-relaxed">
+                Iedere partner levert (naast de ZIS-projecten) lopende of succesvol afgeronde projecten aan voor gebruik binnen KAAP, online en offline. Doel: een gezamenlijke selectie van circa 15 projecten voor zichtbaarheid, expositie en mogelijke doorontwikkeling. Deadline: uiterlijk 10 mei.
+            </p>
+        </div>
+
+        <form id="expositionForm" class="bg-white p-6 sm:p-8 md:p-10 rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 space-y-10 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-kaap-gradient"></div>
+
+            <div id="formFeedback" class="hidden p-4 rounded-xl text-center font-semibold mb-4 transition-all"></div>
+
+            <!-- Sectie 1: Wie levert aan -->
+            <section class="space-y-6">
+                <div class="border-l-4 border-kaap-water pl-4">
+                    <h2 class="font-heading font-bold text-xl text-kaap-gray">1. Wie levert aan?</h2>
+                    <p class="text-sm text-kaap-text-gray">Zodat we contact kunnen opnemen bij vragen over jouw aanlevering.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="partnerNaam" class="block font-heading font-semibold text-kaap-gray text-lg">Welke partner ben je? <span class="text-kaap-water">*</span></label>
+                    <p class="text-sm text-kaap-text-gray mb-2">De organisatie die dit project aanlevert.</p>
+                    <input type="text" id="partnerNaam" name="partnerNaam" required
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                        placeholder="Bijv. Dockwize, HZ University, Impuls Zeeland..." />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="contactPersoon" class="block font-heading font-semibold text-kaap-gray text-lg">Contactpersoon voor vragen <span class="text-kaap-water">*</span></label>
+                        <input type="text" id="contactPersoon" name="contactPersoon" required
+                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                            placeholder="Voor- en achternaam" />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="contactEmail" class="block font-heading font-semibold text-kaap-gray text-lg">E-mailadres <span class="text-kaap-water">*</span></label>
+                        <input type="email" id="contactEmail" name="contactEmail" required
+                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                            placeholder="naam@organisatie.nl" />
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sectie 2: Het project -->
+            <section class="space-y-6">
+                <div class="border-l-4 border-kaap-water pl-4">
+                    <h2 class="font-heading font-bold text-xl text-kaap-gray">2. Het project</h2>
+                    <p class="text-sm text-kaap-text-gray">Bij voorkeur een lopend of succesvol afgerond project.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="projectTitel" class="block font-heading font-semibold text-kaap-gray text-lg">Projectnaam <span class="text-kaap-water">*</span></label>
+                    <input type="text" id="projectTitel" name="projectTitel" required
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                        placeholder="De titel van het project" />
+                </div>
+
+                <div class="space-y-2">
+                    <label for="pitch" class="block font-heading font-semibold text-kaap-gray text-lg">Korte pitch <span class="text-kaap-water">*</span></label>
+                    <p class="text-sm text-kaap-text-gray mb-2">In één tot twee zinnen: waar gaat dit project over? Wordt vaak gebruikt als ondertitel.</p>
+                    <input type="text" id="pitch" name="pitch" required
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                        placeholder="Dit project richt zich op..." />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-3">
+                        <label class="block font-heading font-semibold text-kaap-gray text-lg">Status <span class="text-kaap-water">*</span></label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="cursor-pointer relative">
+                                <input type="radio" name="status" value="Lopend" class="peer sr-only" required>
+                                <div class="p-4 rounded-xl bg-gray-50 border-2 border-transparent peer-checked:border-kaap-water peer-checked:bg-cyan-50 hover:bg-gray-100 transition-all text-center font-medium text-kaap-gray">
+                                    Lopend
+                                </div>
+                            </label>
+                            <label class="cursor-pointer relative">
+                                <input type="radio" name="status" value="Afgerond" class="peer sr-only">
+                                <div class="p-4 rounded-xl bg-gray-50 border-2 border-transparent peer-checked:border-kaap-water peer-checked:bg-cyan-50 hover:bg-gray-100 transition-all text-center font-medium text-kaap-gray">
+                                    Afgerond
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="block font-heading font-semibold text-kaap-gray text-lg">Transitiethema <span class="text-kaap-water">*</span></label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="cursor-pointer relative">
+                                <input type="radio" name="transitionTheme" value="Water" class="peer sr-only" required>
+                                <div class="p-3 rounded-xl bg-gray-50 border-2 border-transparent peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:bg-gray-100 transition-all text-center font-medium text-kaap-gray">
+                                    Water
+                                </div>
+                            </label>
+                            <label class="cursor-pointer relative">
+                                <input type="radio" name="transitionTheme" value="Voedsel" class="peer sr-only">
+                                <div class="p-3 rounded-xl bg-gray-50 border-2 border-transparent peer-checked:border-green-500 peer-checked:bg-green-50 hover:bg-gray-100 transition-all text-center font-medium text-kaap-gray">
+                                    Voedsel
+                                </div>
+                            </label>
+                            <label class="cursor-pointer relative">
+                                <input type="radio" name="transitionTheme" value="Energie" class="peer sr-only">
+                                <div class="p-3 rounded-xl bg-gray-50 border-2 border-transparent peer-checked:border-yellow-500 peer-checked:bg-yellow-50 hover:bg-gray-100 transition-all text-center font-medium text-kaap-gray">
+                                    Energie
+                                </div>
+                            </label>
+                            <label class="cursor-pointer relative">
+                                <input type="radio" name="transitionTheme" value="Meerdere/Anders" class="peer sr-only">
+                                <div class="p-3 rounded-xl bg-gray-50 border-2 border-transparent peer-checked:border-kaap-purple peer-checked:bg-purple-50 hover:bg-gray-100 transition-all text-center font-medium text-kaap-gray">
+                                    Anders / mix
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="betrokkenPartners" class="block font-heading font-semibold text-kaap-gray text-lg">Overige betrokken partners</label>
+                    <p class="text-sm text-kaap-text-gray mb-2">Welke andere organisaties of stakeholders werken mee?</p>
+                    <input type="text" id="betrokkenPartners" name="betrokkenPartners"
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                        placeholder="Bedrijf A, Instelling B..." />
+                </div>
+            </section>
+
+            <!-- Sectie 3: Vertel het verhaal (subkop-vragen) -->
+            <section class="space-y-6">
+                <div class="border-l-4 border-kaap-water pl-4">
+                    <h2 class="font-heading font-bold text-xl text-kaap-gray">3. Vertel het verhaal</h2>
+                    <p class="text-sm text-kaap-text-gray">Beantwoord deze vragen kort. KAAP gebruikt jouw antwoorden direct als subkoppen in de gepubliceerde tekst — schrijf in volzinnen, niet in steekwoorden.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="aanleiding" class="block font-heading font-semibold text-kaap-gray text-lg">Wat was de aanleiding? <span class="text-kaap-water">*</span></label>
+                    <p class="text-sm text-kaap-text-gray mb-2">Welk probleem, welke kans of welke vraag triggerde dit project?</p>
+                    <textarea id="aanleiding" name="aanleiding" rows="3" required
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400 resize-none"
+                        placeholder="De regio staat voor..."></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="aanpak" class="block font-heading font-semibold text-kaap-gray text-lg">Wat hebben jullie gedaan? <span class="text-kaap-water">*</span></label>
+                    <p class="text-sm text-kaap-text-gray mb-2">Welke aanpak of oplossing hebben jullie gekozen? Wie deed wat?</p>
+                    <textarea id="aanpak" name="aanpak" rows="4" required
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400 resize-none"
+                        placeholder="We hebben samen met..."></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="resultaat" class="block font-heading font-semibold text-kaap-gray text-lg">Wat is het resultaat tot nu toe? <span class="text-kaap-water">*</span></label>
+                    <p class="text-sm text-kaap-text-gray mb-2">Concreet: welke output, mijlpalen of getallen kun je noemen?</p>
+                    <textarea id="resultaat" name="resultaat" rows="3" required
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400 resize-none"
+                        placeholder="Inmiddels hebben we..."></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="impact" class="block font-heading font-semibold text-kaap-gray text-lg">Wat betekent dit voor Zeeland?</label>
+                    <p class="text-sm text-kaap-text-gray mb-2">Hoe draagt dit project bij aan de regio en de transitie waar het bij hoort?</p>
+                    <textarea id="impact" name="impact" rows="3"
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400 resize-none"
+                        placeholder="Voor Zeeland betekent dit..."></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="rolKaap" class="block font-heading font-semibold text-kaap-gray text-lg">Wat is de rol van KAAP / het netwerk?</label>
+                    <p class="text-sm text-kaap-text-gray mb-2">Hoe heeft KAAP bijgedragen, of welke rol kan het netwerk nu pakken?</p>
+                    <textarea id="rolKaap" name="rolKaap" rows="3"
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400 resize-none"
+                        placeholder="KAAP brengt..."></textarea>
+                </div>
+            </section>
+
+            <!-- Sectie 4: Beeldmateriaal -->
+            <section class="space-y-6">
+                <div class="border-l-4 border-kaap-water pl-4">
+                    <h2 class="font-heading font-bold text-xl text-kaap-gray">4. Beeldmateriaal voor expositie</h2>
+                    <p class="text-sm text-kaap-text-gray">Sleep je foto's hierheen of plak een link naar een map. Goed beeldmateriaal is essentieel voor een sterke expositie.</p>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="block font-heading font-semibold text-kaap-gray text-lg">Upload foto's <span class="text-kaap-water">*</span></label>
+                    <p class="text-sm text-kaap-text-gray">JPG, PNG, WEBP, GIF of HEIC — tot 20 MB per bestand. Je kunt meerdere foto's tegelijk slepen.</p>
+
+                    <div id="dropzone"
+                        class="relative cursor-pointer rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50/60 hover:bg-gray-50 hover:border-kaap-water/60 transition-all p-8 sm:p-10 text-center">
+                        <input type="file" id="fileInput" multiple accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+
+                        <div class="pointer-events-none flex flex-col items-center gap-3">
+                            <div class="w-14 h-14 rounded-2xl bg-cyan-50 text-kaap-water flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                            </div>
+                            <p class="font-heading font-semibold text-kaap-gray">
+                                Sleep foto's hierheen <span class="text-kaap-text-gray font-medium">of klik om te bladeren</span>
+                            </p>
+                            <p class="text-xs text-kaap-text-gray">Tip: voeg liefst minimaal 3 foto's toe (sfeer, detail, mensen-in-actie)</p>
+                        </div>
+                    </div>
+
+                    <div id="uploadList" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+                    <p id="uploadHint" class="hidden text-xs text-kaap-text-gray">Bestanden worden direct geüpload. Wacht tot alle uploads klaar zijn voordat je het formulier verstuurt.</p>
+                    <input type="hidden" id="mediaFiles" name="mediaFiles" value="[]" />
+                </div>
+
+                <div class="space-y-2">
+                    <label for="mediaLinks" class="block font-heading font-semibold text-kaap-gray text-lg">Aanvullende link (optioneel)</label>
+                    <p class="text-sm text-kaap-text-gray mb-2">Heb je veel of grote bestanden? Plak hier een Drive-, WeTransfer- of Dropbox-link.</p>
+                    <input type="text" id="mediaLinks" name="mediaLinks"
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400"
+                        placeholder="https://drive.google.com/..." />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-3">
+                        <label class="block font-heading font-semibold text-kaap-gray text-lg">Geschikt voor <span class="text-kaap-water">*</span></label>
+                        <div class="space-y-2">
+                            <label class="cursor-pointer relative block">
+                                <input type="radio" name="expositieType" value="Online" class="peer sr-only" required>
+                                <div class="p-3 rounded-xl bg-gray-50 border-2 border-transparent peer-checked:border-kaap-water peer-checked:bg-cyan-50 hover:bg-gray-100 transition-all text-center font-medium text-kaap-gray">
+                                    Alleen online
+                                </div>
+                            </label>
+                            <label class="cursor-pointer relative block">
+                                <input type="radio" name="expositieType" value="Offline" class="peer sr-only">
+                                <div class="p-3 rounded-xl bg-gray-50 border-2 border-transparent peer-checked:border-kaap-water peer-checked:bg-cyan-50 hover:bg-gray-100 transition-all text-center font-medium text-kaap-gray">
+                                    Alleen offline / fysiek
+                                </div>
+                            </label>
+                            <label class="cursor-pointer relative block">
+                                <input type="radio" name="expositieType" value="Beide" class="peer sr-only">
+                                <div class="p-3 rounded-xl bg-gray-50 border-2 border-transparent peer-checked:border-kaap-water peer-checked:bg-cyan-50 hover:bg-gray-100 transition-all text-center font-medium text-kaap-gray">
+                                    Online en offline
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="verplichtingen" class="block font-heading font-semibold text-kaap-gray text-lg">Verplichtingen (subsidies / logo's)</label>
+                        <p class="text-sm text-kaap-text-gray mb-2">Bijv. "Mede mogelijk gemaakt door...", OPZuid, etc.</p>
+                        <textarea id="verplichtingen" name="verplichtingen" rows="4"
+                            class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400 resize-none"
+                            placeholder="Vermeld hier verplichte logo's of teksten..."></textarea>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="doorontwikkeling" class="block font-heading font-semibold text-kaap-gray text-lg">Mogelijke doorontwikkeling</label>
+                    <p class="text-sm text-kaap-text-gray mb-2">Welke vervolgstap of uitbreiding kunnen we samen pakken?</p>
+                    <textarea id="doorontwikkeling" name="doorontwikkeling" rows="3"
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400 resize-none"
+                        placeholder="Optioneel: ideeën voor doorontwikkeling..."></textarea>
+                </div>
+            </section>
+
+            <!-- Sectie 5: Toestemming -->
+            <section class="space-y-6">
+                <div class="border-l-4 border-kaap-water pl-4">
+                    <h2 class="font-heading font-bold text-xl text-kaap-gray">5. Toestemming</h2>
+                    <p class="text-sm text-kaap-text-gray">Een aanlevering kan alleen worden gebruikt als hier toestemming voor is.</p>
+                </div>
+
+                <label class="flex items-start gap-4 p-5 rounded-xl bg-cyan-50/50 border-2 border-kaap-water/20 hover:border-kaap-water/40 cursor-pointer transition-all has-[:checked]:bg-cyan-50 has-[:checked]:border-kaap-water">
+                    <input type="checkbox" id="toestemming" name="toestemming" required
+                        class="mt-1 w-5 h-5 rounded border-gray-300 text-kaap-water focus:ring-kaap-water focus:ring-2 cursor-pointer" />
+                    <div class="space-y-1">
+                        <span class="block font-heading font-semibold text-kaap-gray">Hierbij geef ik toestemming om dit project te gebruiken <span class="text-kaap-water">*</span></span>
+                        <span class="block text-sm text-kaap-text-gray">Ik bevestig dat ik (namens mijn organisatie en eventuele projectpartners) toestemming heb om dit project, inclusief het aangeleverde beeldmateriaal, te delen voor expositie en doorontwikkeling binnen KAAP.</span>
+                    </div>
+                </label>
+            </section>
+
+            <!-- Sectie 6: Feedback op de tool -->
+            <section class="space-y-6">
+                <div class="border-l-4 border-gray-300 pl-4">
+                    <h2 class="font-heading font-bold text-xl text-kaap-gray">6. Feedback op deze tool</h2>
+                    <p class="text-sm text-kaap-text-gray">Optioneel — helpt ons de aanlever-tool te verbeteren.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="feedback" class="block font-heading font-semibold text-kaap-gray text-lg">Wat mis je in dit formulier of in de tool?</label>
+                    <textarea id="feedback" name="feedback" rows="3"
+                        class="w-full px-5 py-4 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-kaap-water/50 focus:ring-4 focus:ring-kaap-water/10 outline-none transition-all duration-300 font-medium placeholder-gray-400 resize-none"
+                        placeholder="Bijv. een veld dat ik mis, iets wat onduidelijk is, of een functie die handig zou zijn..."></textarea>
+                </div>
+            </section>
+
+            <div class="pt-4">
+                <button type="submit" id="submitBtn"
+                    class="group w-full bg-kaap-gray hover:bg-black text-white font-heading font-bold text-lg py-5 rounded-xl shadow-lg hover:shadow-2xl hover:shadow-kaap-water/20 transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                    <span id="submitText">Project aanleveren</span>
+                    <svg id="submitIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 group-hover:translate-x-1 transition-transform">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+</Layout>
+
+<script>
+    import { upload } from '@vercel/blob/client';
+
+    const form = document.getElementById('expositionForm') as HTMLFormElement;
+    const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+    const submitText = document.getElementById('submitText');
+    const formFeedback = document.getElementById('formFeedback');
+
+    // ---- File Upload (drag & drop + click) ----
+    const dropzone = document.getElementById('dropzone') as HTMLDivElement;
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    const uploadList = document.getElementById('uploadList') as HTMLDivElement;
+    const uploadHint = document.getElementById('uploadHint') as HTMLParagraphElement;
+    const mediaFilesField = document.getElementById('mediaFiles') as HTMLInputElement;
+
+    type UploadItem = {
+        id: string;
+        name: string;
+        status: 'uploading' | 'done' | 'error';
+        url?: string;
+        previewUrl?: string;
+        error?: string;
+    };
+
+    const uploads = new Map<string, UploadItem>();
+
+    const syncMediaFilesField = () => {
+        const urls = Array.from(uploads.values())
+            .filter(u => u.status === 'done' && u.url)
+            .map(u => u.url as string);
+        mediaFilesField.value = JSON.stringify(urls);
+    };
+
+    const renderUploads = () => {
+        if (uploads.size === 0) {
+            uploadList.classList.add('hidden');
+            uploadHint.classList.add('hidden');
+            uploadList.innerHTML = '';
+            return;
+        }
+        uploadList.classList.remove('hidden');
+        uploadHint.classList.remove('hidden');
+
+        uploadList.innerHTML = '';
+        for (const item of uploads.values()) {
+            const tile = document.createElement('div');
+            tile.className = 'relative group rounded-xl overflow-hidden border-2 border-gray-100 bg-gray-50 aspect-square';
+
+            const img = document.createElement('img');
+            img.className = 'w-full h-full object-cover';
+            if (item.previewUrl) img.src = item.previewUrl;
+            img.alt = item.name;
+            tile.appendChild(img);
+
+            if (item.status === 'uploading') {
+                const overlay = document.createElement('div');
+                overlay.className = 'absolute inset-0 bg-black/40 flex items-center justify-center';
+                overlay.innerHTML = `
+                    <div class="size-8 rounded-full border-3 border-white/40 border-t-white animate-spin"></div>
+                `;
+                tile.appendChild(overlay);
+            }
+
+            if (item.status === 'error') {
+                const overlay = document.createElement('div');
+                overlay.className = 'absolute inset-0 bg-red-600/80 flex flex-col items-center justify-center text-white p-2 text-center text-xs font-semibold';
+                overlay.textContent = item.error || 'Upload mislukt';
+                tile.appendChild(overlay);
+            }
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'absolute top-1.5 right-1.5 bg-white/95 hover:bg-white text-kaap-gray rounded-full size-7 flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity';
+            removeBtn.setAttribute('aria-label', `Verwijder ${item.name}`);
+            removeBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            `;
+            removeBtn.addEventListener('click', () => {
+                if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+                uploads.delete(item.id);
+                syncMediaFilesField();
+                renderUploads();
+            });
+            tile.appendChild(removeBtn);
+
+            const label = document.createElement('div');
+            label.className = 'absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white text-[10px] px-2 py-1.5 truncate';
+            label.textContent = item.name;
+            tile.appendChild(label);
+
+            uploadList.appendChild(tile);
+        }
+    };
+
+    const handleFiles = async (files: FileList | File[]) => {
+        const list = Array.from(files);
+        for (const file of list) {
+            if (!file.type.startsWith('image/')) continue;
+            if (file.size > 20 * 1024 * 1024) {
+                alert(`${file.name} is groter dan 20 MB en wordt overgeslagen.`);
+                continue;
+            }
+
+            const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+            const previewUrl = URL.createObjectURL(file);
+            uploads.set(id, { id, name: file.name, status: 'uploading', previewUrl });
+            renderUploads();
+
+            try {
+                const blob = await upload(file.name, file, {
+                    access: 'public',
+                    handleUploadUrl: '/api/upload',
+                    contentType: file.type
+                });
+                const item = uploads.get(id);
+                if (item) {
+                    item.status = 'done';
+                    item.url = blob.url;
+                    syncMediaFilesField();
+                    renderUploads();
+                }
+            } catch (err: any) {
+                console.error('Upload failed:', err);
+                const item = uploads.get(id);
+                if (item) {
+                    item.status = 'error';
+                    item.error = err?.message || 'Upload mislukt';
+                    renderUploads();
+                }
+            }
+        }
+    };
+
+    fileInput?.addEventListener('change', () => {
+        if (fileInput.files && fileInput.files.length > 0) {
+            handleFiles(fileInput.files);
+            fileInput.value = '';
+        }
+    });
+
+    ['dragenter', 'dragover'].forEach(evt => {
+        dropzone?.addEventListener(evt, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.add('border-kaap-water', 'bg-cyan-50/60');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(evt => {
+        dropzone?.addEventListener(evt, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('border-kaap-water', 'bg-cyan-50/60');
+        });
+    });
+
+    dropzone?.addEventListener('drop', (e: DragEvent) => {
+        if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+            handleFiles(e.dataTransfer.files);
+        }
+    });
+
+    // ---- Submit ----
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!submitBtn || !submitText || !formFeedback) return;
+
+        const stillUploading = Array.from(uploads.values()).some(u => u.status === 'uploading');
+        if (stillUploading) {
+            formFeedback.innerText = 'Wacht tot alle foto-uploads klaar zijn voordat je verstuurt.';
+            formFeedback.className = 'p-4 rounded-xl text-center font-semibold mb-4 bg-yellow-100 text-yellow-800 transition-all block';
+            return;
+        }
+
+        const hasMedia =
+            Array.from(uploads.values()).some(u => u.status === 'done') ||
+            (form.querySelector<HTMLInputElement>('#mediaLinks')?.value.trim().length ?? 0) > 0;
+
+        if (!hasMedia) {
+            formFeedback.innerText = 'Voeg minimaal één foto toe of plak een link naar je beeldmateriaal.';
+            formFeedback.className = 'p-4 rounded-xl text-center font-semibold mb-4 bg-yellow-100 text-yellow-800 transition-all block';
+            window.scrollTo({ top: dropzone.offsetTop - 100, behavior: 'smooth' });
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitText.innerText = 'Bezig met opslaan...';
+        formFeedback.classList.add('hidden');
+
+        syncMediaFilesField();
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch('/api/submit-exposition', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                formFeedback.innerText = result.message;
+                formFeedback.className = 'p-4 rounded-xl text-center font-semibold mb-4 bg-green-100 text-green-800 transition-all block';
+                form.reset();
+                uploads.forEach(u => { if (u.previewUrl) URL.revokeObjectURL(u.previewUrl); });
+                uploads.clear();
+                renderUploads();
+                syncMediaFilesField();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                throw new Error(result.error || 'Er ging iets fout.');
+            }
+        } catch (error: any) {
+            formFeedback.innerText = error.message;
+            formFeedback.className = 'p-4 rounded-xl text-center font-semibold mb-4 bg-red-100 text-red-800 transition-all block';
+        } finally {
+            submitBtn.disabled = false;
+            submitText.innerText = 'Project aanleveren';
+        }
+    });
+</script>

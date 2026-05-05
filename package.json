@@ -9,13 +9,15 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/vercel": "^8.0.0",
+    "@astrojs/vercel": "^9.0.5",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/outfit": "^5.2.8",
-    "@libsql/client": "^0.17.0",
+    "@libsql/client": "^0.14.0",
     "@tailwindcss/vite": "^4.1.18",
+    "@vercel/blob": "^2.3.3",
     "astro": "^5.17.1",
     "dotenv": "^17.3.1",
+    "node-fetch": "^3.3.2",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {

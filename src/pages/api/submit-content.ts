@@ -29,13 +29,13 @@ export const POST: APIRoute = async ({ request }) => {
             });
         }
 
-        await db.execute({
-            sql: `
+        await db.execute(
+            `
         INSERT INTO content_submissions (wat, waar, waarom, timing, partners, toelichting, fotos, contactPersoon, contactGegevens, verplichtingen)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
-            args: [wat, waar, waarom, timing, partners, toelichting, fotos, contactPersoon, contactGegevens, verplichtingen]
-        });
+            [wat, waar, waarom, timing, partners, toelichting, fotos, contactPersoon, contactGegevens, verplichtingen]
+        );
 
         return new Response(JSON.stringify({ success: true, message: 'Content idee succesvol ingediend!' }), {
             status: 200,

@@ -1,4 +1,4 @@
-import { d as db } from '../../chunks/database_D_0gIzXk.mjs';
+import { d as db } from '../../chunks/database_DgLR3aOz.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const POST = async ({ request }) => {
@@ -21,13 +21,13 @@ const POST = async ({ request }) => {
         headers: { "Content-Type": "application/json" }
       });
     }
-    await db.execute({
-      sql: `
+    await db.execute(
+      `
         INSERT INTO projects (title, summary, description, transitionTheme, partners, contactName, contactEmail, mediaLinks, externalLinks, callToAction, obligations)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
-      args: [title, summary, description, transitionTheme, partners, contactName, contactEmail, mediaLinks, externalLinks, callToAction, obligations]
-    });
+      [title, summary, description, transitionTheme, partners, contactName, contactEmail, mediaLinks, externalLinks, callToAction, obligations]
+    );
     return new Response(JSON.stringify({ success: true, message: "Project succesvol ingediend!" }), {
       status: 200,
       headers: { "Content-Type": "application/json" }

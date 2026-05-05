@@ -1,4 +1,4 @@
-import { d as db } from '../../chunks/database_D_0gIzXk.mjs';
+import { d as db } from '../../chunks/database_DgLR3aOz.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const POST = async ({ request }) => {
@@ -17,13 +17,13 @@ const POST = async ({ request }) => {
         headers: { "Content-Type": "application/json" }
       });
     }
-    await db.execute({
-      sql: `
+    await db.execute(
+      `
         INSERT INTO partner_submissions (partnerNaam, websiteUrl, expertise, omschrijving, contactPersoon, emailadres, mediaLink)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `,
-      args: [partnerNaam, websiteUrl, expertise, omschrijving, contactPersoon, emailadres, mediaLink]
-    });
+      [partnerNaam, websiteUrl, expertise, omschrijving, contactPersoon, emailadres, mediaLink]
+    );
     return new Response(JSON.stringify({ success: true, message: "Nieuwe partner succesvol doorgegeven!" }), {
       status: 200,
       headers: { "Content-Type": "application/json" }

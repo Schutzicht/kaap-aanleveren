@@ -2,6 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import db from '../db/database';
 
+const isAuthenticated = Astro.cookies.get('kaap_auth')?.value === 'authenticated';
+if (!isAuthenticated) {
+    return Astro.redirect('/login');
+}
+
 const projectsRes = await db.execute(`SELECT * FROM projects ORDER BY createdAt DESC`);
 const projects = projectsRes.rows;
 
@@ -13,6 +18,19 @@ const eventSubs = eventSubsRes.rows;
 
 const partnerSubsRes = await db.execute(`SELECT * FROM partner_submissions ORDER BY createdAt DESC`);
 const partnerSubs = partnerSubsRes.rows;
+
+const expositionSubsRes = await db.execute(`SELECT * FROM exposition_submissions ORDER BY createdAt DESC`);
+const expositionSubs = expositionSubsRes.rows;
+
+const parseMediaFiles = (raw: any): string[] => {
+    if (!raw) return [];
+    try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed.filter((u: any) => typeof u === 'string') : [];
+    } catch {
+        return [];
+    }
+};
 
 const getThemeColor = (theme: string) => {
     switch(theme.toLowerCase()) {
@@ -72,6 +90,9 @@ const deriveTheme = (text: string) => {
             </button>
             <button id="tab-partners" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-kaap-text-gray hover:bg-gray-50 transition-all">
                 Partners ({partnerSubs.length})
+            </button>
+            <button id="tab-exposition" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-kaap-text-gray hover:bg-gray-50 transition-all">
+                Expositie ({expositionSubs.length})
             </button>
         </div>
 
@@ -446,12 +467,188 @@ const deriveTheme = (text: string) => {
                 </div>
             )}
         </div>
+
+        <!-- EXPOSITION PANE -->
+        <div id="pane-exposition" class="pane hidden space-y-8 animate-fade-in">
+             {expositionSubs.length === 0 ? (
+                <div class="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm text-center">
+                    <div class="text-4xl mb-4">📭</div>
+                    <h3 class="text-xl font-heading font-bold text-kaap-gray mb-2">Geen expositie-aanleveringen</h3>
+                    <p class="text-kaap-text-gray">Er zijn nog geen projecten aangeleverd voor de KAAP expositie.</p>
+                </div>
+            ) : (
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {expositionSubs.map((ex) => {
+                        const photos = parseMediaFiles(ex.mediaFiles);
+                        return (
+                        <div class="bg-white rounded-3xl shadow-lg shadow-gray-200/40 border border-gray-100 overflow-hidden flex flex-col relative group">
+                            <div class="absolute top-0 left-0 w-full h-1.5 opacity-50 bg-kaap-water"></div>
+
+                            <div class="p-8 flex-grow space-y-6">
+                                <div class="space-y-3">
+                                    <div class="flex items-start justify-between gap-4 flex-wrap">
+                                        <h2 class="text-2xl font-heading font-bold text-kaap-gray leading-tight group-hover:text-kaap-water transition-colors">
+                                            {ex.projectTitel}
+                                        </h2>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap ${getThemeColor(ex.transitionTheme)}`}>
+                                                <span>{getThemeIcon(ex.transitionTheme)}</span>
+                                                {ex.transitionTheme}
+                                            </span>
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap bg-cyan-50 text-kaap-water border-kaap-water/20">
+                                                {ex.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-kaap-water font-semibold">
+                                        {ex.pitch}
+                                    </p>
+                                </div>
+
+                                {photos.length > 0 && (
+                                    <div class="space-y-2">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Beeldmateriaal ({photos.length})</span>
+                                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                            {photos.slice(0, 8).map((url) => (
+                                                <a href={url} target="_blank" class="block aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-100 hover:border-kaap-water transition-colors">
+                                                    <img src={url} alt="Beeldmateriaal" class="w-full h-full object-cover" loading="lazy" />
+                                                </a>
+                                            ))}
+                                            {photos.length > 8 && (
+                                                <div class="flex items-center justify-center aspect-square rounded-lg bg-gray-100 text-sm font-bold text-kaap-text-gray">
+                                                    +{photos.length - 8}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                                    <div class="space-y-1">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aangeleverd door</span>
+                                        <p class="text-sm font-medium text-kaap-gray">{ex.partnerNaam}</p>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Datum</span>
+                                        <p class="text-sm font-medium text-kaap-gray">{new Date(ex.createdAt).toLocaleDateString('nl-NL', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                                    </div>
+                                    <div class="space-y-1 col-span-2">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Contact</span>
+                                        <p class="text-sm font-medium text-kaap-gray">{ex.contactPersoon} <span class="text-gray-400">({ex.contactEmail})</span></p>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Geschikt voor</span>
+                                        <p class="text-sm font-medium text-kaap-gray">{ex.expositieType}</p>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Toestemming</span>
+                                        <p class={`text-sm font-bold ${ex.toestemming ? 'text-green-600' : 'text-red-600'}`}>{ex.toestemming ? 'Ja, gegeven' : 'Niet gegeven'}</p>
+                                    </div>
+                                    {ex.betrokkenPartners && (
+                                        <div class="space-y-1 col-span-2">
+                                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Overige partners</span>
+                                            <p class="text-sm font-medium text-kaap-gray">{ex.betrokkenPartners}</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div class="space-y-4 pt-2 border-t border-gray-100">
+                                    <div class="space-y-1.5">
+                                        <span class="block text-xs font-bold text-kaap-water uppercase tracking-wider">Wat was de aanleiding?</span>
+                                        <p class="text-sm text-kaap-text-gray leading-relaxed">{ex.aanleiding}</p>
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <span class="block text-xs font-bold text-kaap-water uppercase tracking-wider">Wat hebben jullie gedaan?</span>
+                                        <p class="text-sm text-kaap-text-gray leading-relaxed">{ex.aanpak}</p>
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <span class="block text-xs font-bold text-kaap-water uppercase tracking-wider">Wat is het resultaat?</span>
+                                        <p class="text-sm text-kaap-text-gray leading-relaxed">{ex.resultaat}</p>
+                                    </div>
+                                    {ex.impact && (
+                                        <div class="space-y-1.5">
+                                            <span class="block text-xs font-bold text-kaap-water uppercase tracking-wider">Wat betekent dit voor Zeeland?</span>
+                                            <p class="text-sm text-kaap-text-gray leading-relaxed">{ex.impact}</p>
+                                        </div>
+                                    )}
+                                    {ex.rolKaap && (
+                                        <div class="space-y-1.5">
+                                            <span class="block text-xs font-bold text-kaap-water uppercase tracking-wider">Rol van KAAP / het netwerk</span>
+                                            <p class="text-sm text-kaap-text-gray leading-relaxed">{ex.rolKaap}</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {ex.doorontwikkeling && (
+                                    <div class="space-y-2">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Doorontwikkeling</span>
+                                        <div class="bg-cyan-50/50 rounded-xl p-4 text-sm text-kaap-gray">
+                                            {ex.doorontwikkeling}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {ex.verplichtingen && (
+                                    <div class="space-y-2">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Verplichtingen</span>
+                                        <p class="text-sm font-medium text-kaap-pink">{ex.verplichtingen}</p>
+                                    </div>
+                                )}
+
+                                {ex.feedback && (
+                                    <div class="space-y-2 pt-4 border-t border-dashed border-gray-200">
+                                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Feedback op de tool</span>
+                                        <div class="bg-gray-50 rounded-xl p-4 text-sm text-kaap-text-gray italic">
+                                            "{ex.feedback}"
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div class="bg-gray-50 p-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto">
+                                <div class="flex gap-4 flex-wrap">
+                                    {ex.mediaLinks ? (
+                                        <a href={ex.mediaLinks.startsWith('http') ? ex.mediaLinks : `https://${ex.mediaLinks}`} target="_blank" class="text-sm font-semibold text-kaap-water hover:text-kaap-purple flex items-center gap-1.5 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+                                            </svg>
+                                            Externe link
+                                        </a>
+                                    ) : null}
+                                </div>
+
+                                <button
+                                    class="copy-btn copy-exposition bg-white border border-gray-200 hover:border-black px-4 py-2 rounded-lg text-sm font-bold text-kaap-gray hover:bg-black hover:text-white transition-all shadow-sm flex items-center gap-2"
+                                    data-title={ex.projectTitel}
+                                    data-pitch={ex.pitch}
+                                    data-aanleiding={ex.aanleiding}
+                                    data-aanpak={ex.aanpak}
+                                    data-resultaat={ex.resultaat}
+                                    data-impact={ex.impact}
+                                    data-rolkaap={ex.rolKaap}
+                                    data-partner={ex.partnerNaam}
+                                    data-status={ex.status}
+                                    data-theme={ex.transitionTheme}
+                                    data-type={ex.expositieType}
+                                    data-doorontwikkeling={ex.doorontwikkeling}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                    </svg>
+                                    Expositie Tekst Kopiëren
+                                </button>
+                            </div>
+                        </div>
+                    )})}
+                </div>
+            )}
+        </div>
     </div>
 </Layout>
 
 <script>
     // --- UI Tabs Logic ---
-    const tabs = ['projects', 'content', 'events', 'partners'];
+    const tabs = ['projects', 'content', 'events', 'partners', 'exposition'];
     const panes = tabs.map(t => document.getElementById(`pane-${t}`));
     const btns = tabs.map(t => document.getElementById(`tab-${t}`));
 
@@ -563,6 +760,29 @@ Expertise: ${ds.exp}
 
 **Rol van de Partner:**
 ${ds.desc}
+`.trim();
+            } else if (target.classList.contains('copy-exposition')) {
+                // Formatting for Exposition projects
+                const optional = (label: string, value: string | undefined) => {
+                    if (!value || value === 'undefined' || value === 'null') return '';
+                    return `\n\n**${label}**\n${value}`;
+                };
+                template = `
+### ${ds.title}
+${ds.pitch}
+
+**Wat was de aanleiding?**
+${ds.aanleiding}
+
+**Wat hebben jullie gedaan?**
+${ds.aanpak}
+
+**Wat is het resultaat?**
+${ds.resultaat}${optional('Wat betekent dit voor Zeeland?', ds.impact)}${optional('Rol van KAAP / het netwerk', ds.rolkaap)}${optional('Doorontwikkeling', ds.doorontwikkeling)}
+
+[Aangeleverd door: ${ds.partner}]
+[Status: ${ds.status} - Thema: ${ds.theme}]
+[Geschikt voor: ${ds.type}]
 `.trim();
             }
 

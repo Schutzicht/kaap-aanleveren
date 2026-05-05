@@ -1,4 +1,4 @@
-import { d as db } from '../../chunks/database_D_0gIzXk.mjs';
+import { d as db } from '../../chunks/database_DgLR3aOz.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const POST = async ({ request }) => {
@@ -17,13 +17,13 @@ const POST = async ({ request }) => {
         headers: { "Content-Type": "application/json" }
       });
     }
-    await db.execute({
-      sql: `
+    await db.execute(
+      `
         INSERT INTO event_submissions (titel, datumTijd, locatie, transitiethema, omschrijving, inschrijflink, contactPersoon)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `,
-      args: [titel, datumTijd, locatie, transitiethema, omschrijving, inschrijflink, contactPersoon]
-    });
+      [titel, datumTijd, locatie, transitiethema, omschrijving, inschrijflink, contactPersoon]
+    );
     return new Response(JSON.stringify({ success: true, message: "Event succesvol aangemeld!" }), {
       status: 200,
       headers: { "Content-Type": "application/json" }

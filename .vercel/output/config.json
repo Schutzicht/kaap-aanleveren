@@ -20,6 +20,14 @@
 			"dest": "_render"
 		},
 		{
+			"src": "^/api/login/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/logout/?$",
+			"dest": "_render"
+		},
+		{
 			"src": "^/api/submit-content/?$",
 			"dest": "_render"
 		},
@@ -28,11 +36,19 @@
 			"dest": "_render"
 		},
 		{
+			"src": "^/api/submit-exposition/?$",
+			"dest": "_render"
+		},
+		{
 			"src": "^/api/submit-partner/?$",
 			"dest": "_render"
 		},
 		{
 			"src": "^/api/submit-project/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/upload/?$",
 			"dest": "_render"
 		},
 		{
@@ -45,6 +61,14 @@
 		},
 		{
 			"src": "^/event/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/exposition/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/login/?$",
 			"dest": "_render"
 		},
 		{
