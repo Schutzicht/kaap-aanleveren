@@ -2,6 +2,9 @@
   "name": "kaap-projecten-formulier",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -12,14 +15,14 @@
     "@astrojs/vercel": "^9.0.5",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/outfit": "^5.2.8",
-    "@libsql/client": "^0.14.0",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.17.1",
     "dotenv": "^17.3.1",
-    "node-fetch": "^3.3.2",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
-    "@types/node": "^25.3.5"
+    "@libsql/client": "^0.14.0",
+    "@types/node": "^25.3.5",
+    "node-fetch": "^3.3.2"
   }
 }
