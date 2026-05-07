@@ -1,14 +1,14 @@
 import type { APIRoute } from 'astro';
-import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
 export const POST: APIRoute = async ({ request }) => {
-    const body = (await request.json()) as HandleUploadBody;
-
     try {
+        const { handleUpload } = await import('@vercel/blob/client');
+        const body = await request.json();
+
         const jsonResponse = await handleUpload({
             body,
             request,
-            onBeforeGenerateToken: async (pathname) => {
+            onBeforeGenerateToken: async (pathname: string) => {
                 return {
                     allowedContentTypes: [
                         'image/jpeg',
@@ -34,7 +34,7 @@ export const POST: APIRoute = async ({ request }) => {
         });
     } catch (error: any) {
         console.error('Upload error:', error);
-        return new Response(JSON.stringify({ error: error.message || 'Upload mislukt.' }), {
+        return new Response(JSON.stringify({ error: error?.message || 'Upload mislukt.' }), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });

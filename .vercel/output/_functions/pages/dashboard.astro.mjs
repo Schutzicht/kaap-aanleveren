@@ -12,16 +12,20 @@ const $$Dashboard = createComponent(async ($$result, $$props, $$slots) => {
   if (!isAuthenticated) {
     return Astro2.redirect("/login");
   }
-  const projectsRes = await db.execute(`SELECT * FROM projects ORDER BY createdAt DESC`);
-  const projects = projectsRes.rows;
-  const contentSubsRes = await db.execute(`SELECT * FROM content_submissions ORDER BY createdAt DESC`);
-  const contentSubs = contentSubsRes.rows;
-  const eventSubsRes = await db.execute(`SELECT * FROM event_submissions ORDER BY createdAt DESC`);
-  const eventSubs = eventSubsRes.rows;
-  const partnerSubsRes = await db.execute(`SELECT * FROM partner_submissions ORDER BY createdAt DESC`);
-  const partnerSubs = partnerSubsRes.rows;
-  const expositionSubsRes = await db.execute(`SELECT * FROM exposition_submissions ORDER BY createdAt DESC`);
-  const expositionSubs = expositionSubsRes.rows;
+  const safeQuery = async (sql) => {
+    try {
+      const res = await db.execute(sql);
+      return res.rows;
+    } catch (err) {
+      console.error("Dashboard DB query failed:", sql, err);
+      return [];
+    }
+  };
+  const projects = await safeQuery(`SELECT * FROM projects ORDER BY createdAt DESC`);
+  const contentSubs = await safeQuery(`SELECT * FROM content_submissions ORDER BY createdAt DESC`);
+  const eventSubs = await safeQuery(`SELECT * FROM event_submissions ORDER BY createdAt DESC`);
+  const partnerSubs = await safeQuery(`SELECT * FROM partner_submissions ORDER BY createdAt DESC`);
+  const expositionSubs = await safeQuery(`SELECT * FROM exposition_submissions ORDER BY createdAt DESC`);
   const parseMediaFiles = (raw) => {
     if (!raw) return [];
     try {
