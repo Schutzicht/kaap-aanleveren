@@ -1,6 +1,6 @@
 import { e as createComponent, k as renderComponent, l as renderScript, r as renderTemplate, h as createAstro, m as maybeRenderHead, g as addAttribute } from '../chunks/astro/server_D49oF-wB.mjs';
 import 'piccolore';
-import { $ as $$Layout } from '../chunks/Layout_DCjQcq3F.mjs';
+import { $ as $$Layout } from '../chunks/Layout_uCvgx2sa.mjs';
 import { d as db } from '../chunks/database_DgLR3aOz.mjs';
 export { renderers } from '../renderers.mjs';
 
@@ -67,7 +67,7 @@ const $$Dashboard = createComponent(async ($$result, $$props, $$slots) => {
     return "algemeen";
   };
   return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "KAAP Projecten Dashboard" }, { "default": async ($$result2) => renderTemplate` ${maybeRenderHead()}<div class="space-y-10 reveal active max-w-7xl mx-auto pb-20"> <div class="flex flex-col md:flex-row md:items-center justify-between gap-4"> <div> <h1 class="text-3xl md:text-4xl font-heading font-bold text-kaap-gray">
-Centraal <span class="text-kaap-gradient">Dashboard</span> </h1> <p class="text-kaap-text-gray mt-2">Overzicht van alle binnengekomen aanmeldingen.</p> </div> <a href="/" class="bg-white border border-gray-200 hover:border-kaap-pink px-5 py-2.5 rounded-xl font-semibold text-kaap-gray hover:text-kaap-pink transition-colors inline-flex items-center gap-2 shadow-sm"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5"> <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path> </svg>
+Centraal <span class="text-kaap-pink">Dashboard</span> </h1> <p class="text-kaap-text-gray mt-2">Overzicht van alle binnengekomen aanmeldingen.</p> </div> <a href="/" class="bg-white border border-gray-200 hover:border-kaap-pink px-5 py-2.5 rounded-xl font-semibold text-kaap-gray hover:text-kaap-pink transition-colors inline-flex items-center gap-2 shadow-sm"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5"> <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path> </svg>
 Nieuwe Invoer
 </a> </div> <!-- Custom Tabs --> <div class="bg-white p-2 rounded-2xl border border-gray-100 shadow-sm inline-flex flex-wrap gap-2"> <button id="tab-projects" class="tab-btn active px-6 py-2.5 rounded-xl text-sm font-bold transition-all bg-gray-100 text-kaap-gray shadow-inner">
 Projecten (${projects.length})

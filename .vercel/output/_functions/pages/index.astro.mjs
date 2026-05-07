@@ -1,11 +1,11 @@
 import { e as createComponent, k as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_D49oF-wB.mjs';
 import 'piccolore';
-import { $ as $$Layout } from '../chunks/Layout_DCjQcq3F.mjs';
+import { $ as $$Layout } from '../chunks/Layout_uCvgx2sa.mjs';
 export { renderers } from '../renderers.mjs';
 
 const $$Index = createComponent(($$result, $$props, $$slots) => {
   return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "KAAP - Kies Aanlevering" }, { "default": ($$result2) => renderTemplate` ${maybeRenderHead()}<div class="space-y-12 max-w-5xl mx-auto pb-10 reveal active"> <div class="text-center space-y-6"> <h1 class="text-4xl md:text-6xl font-heading font-bold text-kaap-gray leading-tight">
-KAAP <span class="text-kaap-gradient">Aanlever Tool</span> </h1> <p class="text-kaap-text-gray text-lg max-w-3xl mx-auto leading-relaxed">
+KAAP <span class="text-kaap-pink">Aanlever Tool</span> </h1> <p class="text-kaap-text-gray text-lg max-w-3xl mx-auto leading-relaxed">
 Welkom bij de centrale portal voor het aanleveren van content, projecten en evenementen. 
                 Of je nu een <strong>teamlid</strong> of een <strong>partner</strong> van KAAP bent: jouw input helpt ons 
                 om innovatie in Zeeland zichtbaar te maken. Gebruik de onderstaande formulieren om direct informatie 
